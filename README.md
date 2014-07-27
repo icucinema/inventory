@@ -16,5 +16,5 @@ Requirements
 * Python 2.7
 * Django 1.6
 * django-reversion 1.8
-
+* south
 
