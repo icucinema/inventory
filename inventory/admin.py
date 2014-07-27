@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+import reversion
+
 from inventory.models import *
 
 class ItemPictureInline(admin.TabularInline):
@@ -14,7 +16,7 @@ class QuoteInline(admin.TabularInline):
     model = Quote
     extra = 0
 
-class ItemAdmin(admin.ModelAdmin):
+class ItemAdmin(reversion.VersionAdmin):
     inlines = [
             ItemPictureInline,
             ItemNoteInline,
