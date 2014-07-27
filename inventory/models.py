@@ -38,7 +38,7 @@ class ItemHome(models.Model):
 
 class Supplier(models.Model):
     name = models.CharField(max_length=200)
-    url = models.URLField(max_length=1000, blank=True)
+    supplier_url = models.URLField(max_length=1000, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -53,7 +53,7 @@ class Item(models.Model):
     category = models.ForeignKey(ItemCategory)
     status = models.ForeignKey(ItemStatus)
     owner = models.ForeignKey(ItemOwner)
-    reponsible_position = models.ForeignKey(ItemResponsiblePosition)
+    responsible_position = models.ForeignKey(ItemResponsiblePosition)
     home = models.ForeignKey(ItemHome)
     supplier = models.ForeignKey(Supplier)
 
@@ -82,7 +82,7 @@ class Quote(models.Model):
     supplier = models.ForeignKey(Supplier)
     amount = models.DecimalField(max_digits=14, decimal_places=2)
     date = models.DateField()
-    url = models.URLField(max_length=1000,blank=True)
+    quote_url = models.URLField(max_length=1000,blank=True)
     notes = models.TextField(blank=True)
     item = models.ForeignKey(Item)
 

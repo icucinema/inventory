@@ -49,7 +49,7 @@ class Migration(SchemaMigration):
         db.create_table(u'inventory_supplier', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('url', self.gf('django.db.models.fields.URLField')(max_length=1000, blank=True)),
+            ('supplier_url', self.gf('django.db.models.fields.URLField')(max_length=1000, blank=True)),
         ))
         db.send_create_signal(u'inventory', ['Supplier'])
 
@@ -63,7 +63,7 @@ class Migration(SchemaMigration):
             ('category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemCategory'])),
             ('status', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemStatus'])),
             ('owner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemOwner'])),
-            ('reponsible_position', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemResponsiblePosition'])),
+            ('responsible_position', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemResponsiblePosition'])),
             ('home', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemHome'])),
             ('supplier', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.Supplier'])),
         ))
@@ -91,7 +91,7 @@ class Migration(SchemaMigration):
             ('supplier', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.Supplier'])),
             ('amount', self.gf('django.db.models.fields.DecimalField')(max_digits=14, decimal_places=2)),
             ('date', self.gf('django.db.models.fields.DateField')()),
-            ('url', self.gf('django.db.models.fields.URLField')(max_length=1000, blank=True)),
+            ('quote_url', self.gf('django.db.models.fields.URLField')(max_length=1000, blank=True)),
             ('notes', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('item', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.Item'])),
         ))
@@ -141,7 +141,7 @@ class Migration(SchemaMigration):
             'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemOwner']"}),
             'purchase_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'purchase_price': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '14', 'decimal_places': '2', 'blank': 'True'}),
-            'reponsible_position': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemResponsiblePosition']"}),
+            'responsible_position': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemResponsiblePosition']"}),
             'status': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemStatus']"}),
             'supplier': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.Supplier']"})
         },
@@ -191,14 +191,14 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'item': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.Item']"}),
             'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'supplier': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.Supplier']"}),
-            'url': ('django.db.models.fields.URLField', [], {'max_length': '1000', 'blank': 'True'})
+            'quote_url': ('django.db.models.fields.URLField', [], {'max_length': '1000', 'blank': 'True'}),
+            'supplier': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.Supplier']"})
         },
         u'inventory.supplier': {
             'Meta': {'object_name': 'Supplier'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'url': ('django.db.models.fields.URLField', [], {'max_length': '1000', 'blank': 'True'})
+            'supplier_url': ('django.db.models.fields.URLField', [], {'max_length': '1000', 'blank': 'True'})
         }
     }
 
