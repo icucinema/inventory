@@ -37,6 +37,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'reversion',
+    'rest_framework',
+    'djangular',
+    'sitewide',
     'inventory',
     'south',
 )
@@ -54,6 +57,12 @@ ROOT_URLCONF = 'inventory_test.urls'
 
 WSGI_APPLICATION = 'inventory_test.wsgi.application'
 
+
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 20,
+    'PAGINATE_BY_PARAM': 'per_page',
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
+}
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
