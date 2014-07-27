@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Ticketing{% endblock %}
+
+{% block extraheadjs %}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-animate.min.js"></script>
+<script src="{% static 'inventory/js/angular-locale_en-gb.js' %}"></script>
+<script src="{% static 'inventory/js/animate-animate.css.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-route.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lodash/2.4.1/lodash.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.0/moment.min.js"></script>
+<script>
+var __djurls = {
+'root': '{% url "inventory:root" %}',
+'api_root': '{% url "inventory:root" %}api/',
+'partial_root': '{% url "inventory:root" %}partials/',
+'media_root': '{{ MEDIA_URL }}'
+};
+</script>
+<script src="{% static 'inventory/js/InventoryApp.js' %}"></script>
+<script src="{% static 'inventory/js/restangular.min.js' %}"></script>
+{% endblock %}
+
+{% block extracss %}
+<link rel="stylesheet" type="text/css" href="{% static 'inventory/css/inventory.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'inventory/css/animate.css' %}">
+{% endblock %}
+
+{% block content %}
+{% verbatim %}
+<div ng-app="InventoryApp" ng-controller="AppCtrl">
+<div class="row">
+<div class="three columns" ng-controller="NavCtrl">
+<ul class="vertical-nav fixed-nav">
+<li ng-repeat="nav in navs" ng-class="navActive(nav.name)">
+<a ng-href="#{{ nav.url }}">{{ nav.text }}</a>
+</li>
+</ul>
+</div>
+<div class="nine columns" ng-view>
+</div>
+</div>
+</div>
+{% endverbatim %}
+{% endblock %}
