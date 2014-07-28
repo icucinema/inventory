@@ -18,5 +18,6 @@ Requirements
 * django-reversion 1.8
 * south
 * djangorestframework
+* django-filter
 * pillow
 
