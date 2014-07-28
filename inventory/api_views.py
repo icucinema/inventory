@@ -30,6 +30,23 @@ class ItemViewSet(viewsets.ModelViewSet):
             return self.serializer_class
         return FlatItemSerializer
 
+    @action(methods=['GET'])
+    def notes(self, request, pk=None):
+        item = self.get_object()
+        return serialize_queryset(self, ItemNoteSerializer, item.notes.all())
+
+    @action(methods=['GET'])
+    def pictures(self, request, pk=None):
+        item = self.get_object()
+        return serialize_queryset(self, ItemPictureSerializer, item.pictures.all())
+
+    @action(methods=['GET'])
+    def quotes(self, request, pk=None):
+        item = self.get_object()
+        return serialize_queryset(self, QuoteSerializer, item.quotes.all())
+
+
+
 class ItemCategoryViewSet(viewsets.ModelViewSet):
     queryset = ItemCategory.objects.all()
     serializer_class = ItemCategorySerializer

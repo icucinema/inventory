@@ -64,14 +64,14 @@ class Item(models.Model):
 
 class ItemNote(models.Model):
     text = models.TextField()
-    item = models.ForeignKey(Item)
+    item = models.ForeignKey(Item, related_name='notes')
 
     def __unicode__(self):
         return u"Note ["+str(self.id)+u"] on Item ["+str(self.item.id)+u"]"
 
 class ItemPicture(models.Model):
     image = models.ImageField(upload_to="inventory_image")    
-    item = models.ForeignKey(Item)
+    item = models.ForeignKey(Item, related_name='pictures')
 
     def __unicode__(self):
         return u"Picture ["+str(self.id)+u"] on Item ["+str(self.item.id)+u"]"
@@ -84,7 +84,7 @@ class Quote(models.Model):
     date = models.DateField()
     quote_url = models.URLField(max_length=1000,blank=True)
     notes = models.TextField(blank=True)
-    item = models.ForeignKey(Item)
+    item = models.ForeignKey(Item, related_name='quotes')
 
     def __unicode__(self):
         return u"Quote ["+str(self.id)+u"] on Item ["+str(self.item.id)+u"]"
