@@ -1,4 +1,4 @@
-var app = angular.module('StaticApp', [
+var app = angular.module('InventoryApp', [
 	'ngRoute',
 	'ngAnimate',
 	'ngAnimate-animate.css',

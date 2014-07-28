@@ -2,6 +2,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
+from django.contrib.staticfiles.storage import staticfiles_storage
+
 # Create your views here.
 
 class IndexView(TemplateView):
