@@ -38,7 +38,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'reversion',
     'rest_framework',
-    'djangular',
     'sitewide',
     'inventory',
     'south',

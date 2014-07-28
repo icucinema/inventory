@@ -17,4 +17,6 @@ Requirements
 * Django 1.6
 * django-reversion 1.8
 * south
+* djangorestframework
+* pillow
 
