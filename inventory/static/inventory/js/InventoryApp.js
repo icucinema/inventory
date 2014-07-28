@@ -34,17 +34,17 @@ app.config(['djurl', '$routeProvider', '$httpProvider', 'RestangularProvider', f
 			templateUrl: djurl.partial_root + 'index.html',
 			controller: 'IndexCtrl'
 		}).
-		when('/showings', {
-			templateUrl: djurl.partial_root + 'showings.html',
-			controller: 'ShowingsCtrl'
+		when('/item', {
+			templateUrl: djurl.partial_root + 'items.html',
+			controller: 'ItemsCtrl'
 		}).
-		when('/showings/create', {
-			templateUrl: djurl.partial_root + 'showingwizard.html',
-			controller: 'ShowingWizardCtrl'
+    	when('/item/add', {
+			templateUrl: djurl.partial_root + 'additem.html',
+			controller: 'ItemAddCtrl'
 		}).
-		when('/showings/:id', {
-			templateUrl: djurl.partial_root + 'showing.html',
-			controller: 'ShowingCtrl'
+		when('/item/:id', {
+			templateUrl: djurl.partial_root + 'item.html',
+			controller: 'ItemCtrl'
 		}).
 		otherwise({
 			redirectTo: '/'
@@ -128,10 +128,15 @@ app.controller('NavCtrl', function($scope) {
 		},
 */
 		{
-			'name': 'items',
-			'url': '/items',
-			'text': 'Items'
+			'name': 'item',
+			'url': '/item',
+			'text': 'List Items'
 		},
+        {
+            'name': 'additem',
+            'url': '/item/add',
+            'text': 'Add Item'
+        },
 	];
 
 	$scope.navActive = function(navName) {
@@ -142,8 +147,8 @@ app.controller('NavCtrl', function($scope) {
 app.controller('IndexCtrl', function($rootScope) {
 	$rootScope.navName = 'index';
 });
-app.controller('EventsCtrl', function($rootScope, $scope, $routeParams, $location, Restangular) {
-	$rootScope.navName = 'events';
+app.controller('ItemsCtrl', function($rootScope, $scope, $routeParams, $location, Restangular) {
+	$rootScope.navName = 'item';
 
 	var thisPage = parseInt($routeParams.page, 10);
 	if (thisPage != $routeParams.page) {
@@ -160,9 +165,9 @@ app.controller('EventsCtrl', function($rootScope, $scope, $routeParams, $locatio
 		per_page: perPage
 	};
 
-	var events = Restangular.all('events');
-	var updateEventData = function() {
-        	events.getList(sobj).then(function(res) {
+	var items = Restangular.all('item');
+	var updateItemData = function() {
+        	items.getList(sobj).then(function(res) {
 			var startRecord = ((thisPage-1) * perPage) + 1;
 			var endRecord = (startRecord + res.length) - 1;
 			$scope.data = {
@@ -175,13 +180,11 @@ app.controller('EventsCtrl', function($rootScope, $scope, $routeParams, $locatio
 			}
 		});
 	};
-	updateEventData();
+	updateItemData();
 
 	$scope.search = function(q) {
 		sobj.search = q;
-        sobj.page = 1;
-        thisPage = 1;
-		updateEventData();
+		updateItemData();
 	};
 
 	$scope.goTo = function(where) {
@@ -194,137 +197,8 @@ app.controller('EventsCtrl', function($rootScope, $scope, $routeParams, $locatio
 		return 'secondary';
 	};
 
-	$scope.eventUrl = function(event) {
-		return '#/events/' + event.id;
-	};
-});
-app.controller('EventCtrl', function($rootScope, $scope, $routeParams, $location, Restangular, $timeout) {
-	$rootScope.navName = 'events';
-
-	$scope.loading = true;
-
-	var eventId = parseInt($routeParams.id, 10);
-
-	var event = Restangular.one('events', eventId);
-	var updateEventData = function() {
-		event.get().then(function(res) {
-			$scope.loading = false;
-			$scope.data = res;
-		});
-		$scope.showings = event.getList('showings').$object;
-		$scope.tickettypes = event.getList('tickettypes').$object;
-		$scope.tickets = event.getList('tickets').$object;
-	};
-	updateEventData();
-
-	$scope.edit = {
-		tickettype: {}
-	};
-
-	$scope.filmUrl = function(film) {
-                if (!film) return '';
-                var filmId = film.split('/').reverse()[1];
-		return '#/films/' + filmId;
-	};
-	$scope.showingUrl = function(showing) {
-		return '#/showings/' + showing.id;
-	};
-	$scope.punterUrl = function(punter) {
-		if (!punter) return '';
-		return '#/punters/' + punter.id;
-	};
-
-	$scope.editTicketType = function(tickettype) {
-		$scope.edit.tickettype.original = tickettype;
-		$scope.edit.tickettype.edit = Restangular.copy(tickettype);
-	};
-	$scope.saveTicketType = function(tickettype) {
-		$scope.edit.tickettype.original = $scope.edit.tickettype.edit;
-		$scope.edit.tickettype.edit.put().then(updateEventData);
-	};
-	$scope.deleteTicketType = function(tickettype) {
-		tickettype.delete().then(updateEventData);
-	};
-
-	var ticketsAutoRefreshPromise;
-	var ticketsAutoRefresh;
-	var autoRefreshTickets = function() {
-		event.getList('tickets').then(function(res) {
-			if (!ticketsAutoRefresh) return;
-			$scope.tickets = res;
-		}).then(function() {
-			if (!ticketsAutoRefresh) return;
-			ticketsAutoRefreshPromise = $timeout(autoRefreshTickets, 10000);
-		});
-	};
-
-	$scope.ticketsAutoRefreshChange = function(tar) {
-		ticketsAutoRefresh = tar;
-		if (!tar) {
-			$timeout.cancel(ticketsAutoRefreshPromise);
-		} else {
-			autoRefreshTickets();
-		}
-	};
-	ticketsAutoRefresh = $scope.ticketsAutoRefresh = false;
-
-	$scope.$on('$destroy', function() {
-		ticketsAutoRefresh = false;
-		$timeout.cancel(ticketsAutoRefreshPromise);
-	});
-});
-app.controller('ShowingsCtrl', function($rootScope, $scope, $routeParams, $location, Restangular) {
-	$rootScope.navName = 'showings';
-
-	var thisPage = parseInt($routeParams.page, 10);
-	if (thisPage != $routeParams.page) {
-		$location.search('page', 1);
-		return;
-	}
-
-	var perPage = parseInt($routeParams.perPage, 10);
-	if (isNaN(perPage) || perPage < 5) {
-		perPage = 10;
-	}
-	var sobj = {
-		page: thisPage,
-		per_page: perPage
-	};
-
-	var showings = Restangular.all('showings');
-	var updateShowingData = function() {
-        	showings.getList(sobj).then(function(res) {
-			var startRecord = ((thisPage-1) * perPage) + 1;
-			var endRecord = (startRecord + res.length) - 1;
-			$scope.data = {
-				'startAt': startRecord,
-				'endAt': endRecord,
-				'results': res,
-				'next': (res._resultmeta.next ? thisPage+1 : null),
-				'previous': (res._resultmeta.previous ? thisPage-1 : null),
-				'count': res._resultmeta.count
-			}
-		});
-	};
-	updateShowingData();
-
-	$scope.search = function(q) {
-		sobj.search = q;
-		updateShowingData();
-	};
-
-	$scope.goTo = function(where) {
-		if (!where) return;
-		$location.search('page', where);
-	};
-
-	$scope.buttonClass = function(pageNum) {
-		if (!pageNum) return 'default';
-		return 'secondary';
-	};
-
-	$scope.showingUrl = function(showing) {
-		return '#/showings/' + showing.id;
+	$scope.itemUrl = function(item) {
+		return '#/item/' + item.id;
 	};
 });
 app.controller('ShowingCtrl', function($rootScope, $scope, $routeParams, $location, Restangular, $timeout) {
@@ -379,415 +253,6 @@ app.controller('ShowingCtrl', function($rootScope, $scope, $routeParams, $locati
 		$timeout.cancel(ticketsAutoRefreshPromise);
 	});
 });
-app.controller('FilmsCtrl', function($rootScope, $scope, $routeParams, $location, Restangular) {
-	$rootScope.navName = 'films';
-
-	var thisPage = parseInt($routeParams.page, 10);
-	if (thisPage != $routeParams.page) {
-		$location.search('page', 1);
-		return;
-	}
-
-	var perPage = parseInt($routeParams.perPage, 10);
-	if (isNaN(perPage) || perPage < 5) {
-		perPage = 10;
-	}
-
-	var sobj = {
-	       page: thisPage,
-	       per_page: perPage
-	};
-	$scope.retrieve = sobj;
-
-	var films = Restangular.all('films');
-	var updateFilmData = function() {
-        	films.getList(sobj).then(function(res) {
-			var startRecord = ((thisPage-1) * perPage) + 1;
-			var endRecord = (startRecord + res.length) - 1;
-			$scope.data = {
-				'startAt': startRecord,
-				'endAt': endRecord,
-				'results': res,
-				'next': (res._resultmeta.next ? thisPage+1 : null),
-				'previous': (res._resultmeta.previous ? thisPage-1 : null),
-				'count': res._resultmeta.count
-			}
-		});
-	};
-	updateFilmData();
-
-	var distributors = Restangular.all('distributors');
-	distributors.getList().then(function(res) {
-		$scope.distributors = res;
-	});
-
-	$scope.search = function(q) {
-		sobj.search = q;
-		updateFilmData();
-	};
-
-	$scope.goTo = function(where) {
-		if (!where) return;
-		$location.search('page', where);
-	};
-
-	$scope.buttonClass = function(pageNum) {
-		if (!pageNum) return 'default';
-		return 'secondary';
-	};
-
-	$scope.filmUrl = function(film) {
-		return '#/films/' + film.id;
-	};
-
-	$scope.addFilm = {
-		search: '',
-		go: function() {
-			$scope.addFilm.searching = true;
-			$scope.addFilm.resultsFor = null;
-			$scope.addFilm.results = [];
-			var st = $scope.addFilm.search;
-			films.customGETLIST('search_tmdb', {'query': st}).then(function(res) {
-				$scope.addFilm.searching = false;
-				$scope.addFilm.resultsFor = st;
-				$scope.addFilm.results = res;
-			});
-		},
-		create: function(film) {
-			films.post(film).then(function() {
-				updateFilmData();
-			});
-		},
-		setFrom: function(film) {
-			$scope.addFilm.manualItem = film;
-			$scope.addFilm.addType = 'manual';
-			$scope.panes.select($scope.panes.panes[1]);
-		},
-		resultsFor: null,
-		results: [],
-		addType: 'tmdb'
-	};
-});
-app.controller('FilmCtrl', function($rootScope, $scope, $routeParams, $location, Restangular, djurl) {
-	$rootScope.navName = 'films';
-
-	$scope.mediaify = function(url) {
-		if (!url) return;
-		if (url.length > 1 && url[0] == '/') url = url.substring(1);
-		return djurl.media_root + url;
-	}
-
-	$scope.editing = false;
-	$scope.loading = true;
-
-	var filmId = parseInt($routeParams.id, 10);
-
-	var film = Restangular.one('films', filmId);
-	film.get().then(function(res) {
-		$scope.loading = false;
-		$scope.data = res;
-	});
-	film.getList('showings').then(function(res) {
-		$scope.showing_weeks = res;
-		var cnt = 0;
-		for (var i = 0; i < $scope.showing_weeks.length; i++) {
-			cnt += $scope.showing_weeks[i].showings.length;
-		}
-		res.expanded_length = cnt;
-	});
-
-	var distributors = Restangular.all('distributors');
-	distributors.getList().then(function(res) {
-		$scope.distributors = res;
-	});
-
-	$scope.remoteUpdate = function() {
-		$scope.loading = true;
-		film.customPOST({}, "update_remote", {}).then(function(res) {
-			$scope.data = res;
-			$scope.loading = false;
-		});
-	};
-
-	$scope.edit = function() {
-		$scope.edit_data = Restangular.copy($scope.data);
-		$scope.edit_data.distributor = $scope.edit_data.distributor.url;
-		$scope.editing = true;
-	};
-
-	$scope.cancelEdit = function() {
-		$scope.editing = false;
-	};
-	$scope.saveEdit = function() {
-		$scope.data = $scope.edit_data;
-		$scope.data.put();
-		$scope.editing = false;
-	};
-
-	$scope.createBorUrl = function(film, show_week_date) {
-		return '#/films/' + film.id + '/createBor/' + show_week_date;
-	};
-	$scope.borUrl = function(bor) {
-		return $scope.mediaify(bor.pdf_file+"/__fn/"+bor.fake_filename);
-	};
-});
-app.controller('PuntersCtrl', function($rootScope, $scope, $routeParams, $location, Restangular) {
-	$rootScope.navName = 'punters';
-
-	var thisPage = parseInt($routeParams.page, 10);
-	if (thisPage != $routeParams.page) {
-		$location.search('page', 1);
-		return;
-	}
-
-	var perPage = parseInt($routeParams.perPage, 10);
-	if (isNaN(perPage) || perPage < 5) {
-		perPage = 10;
-	}
-
-	var searchQuery = $routeParams.q;
-	var sobj = {page: thisPage, per_page: perPage};
-	if (searchQuery) sobj.search = searchQuery;
-	$scope.searchQuery = searchQuery;
-
-	$scope.data = {};
-
-	var punters = Restangular.all('punters');
-	var updatePunterData = function() {
-		if ($scope.searchQuery) sobj.search = $scope.searchQuery;
-		else delete sobj.search;
-		punters.getList(sobj).then(function(res) {
-			var startRecord = ((thisPage-1) * perPage) + 1;
-			var endRecord = (startRecord + res.length) - 1;
-			$scope.data = {
-				'startAt': startRecord,
-				'endAt': endRecord,
-				'results': res,
-				'next': (res._resultmeta.next ? thisPage+1 : null),
-				'previous': (res._resultmeta.previous ? thisPage-1 : null),
-				'count': res._resultmeta.count
-			}
-		});
-	};
-	updatePunterData();
-
-	$scope.search = function(q) {
-		sobj.page = 1;
-        thisPage = 1;
-		updatePunterData();
-	};
-
-	$scope.goTo = function(where) {
-		if (!where) return;
-		$location.search('page', where);
-	};
-
-	$scope.buttonClass = function(pageNum) {
-		if (!pageNum) return 'default';
-		return 'secondary';
-	};
-
-	$scope.punterUrl = function(punter) {
-		if (!punter) return '';
-		return '#/punters/' + punter.id;
-	};
-});
-app.controller('PunterCtrl', function($rootScope, $scope, $routeParams, $location, Restangular) {
-	$rootScope.navName = 'punters';
-
-	$scope.loading = true;
-
-	$scope.punterTypes = [
-		{ label: 'Full member', value: 'full' },
-		{ label: 'Associate/Life member', value: 'associate' },
-		{ label: 'Public', value: 'public' }
-	];
-
-	var punterId = parseInt($routeParams.id, 10);
-
-	var punter = Restangular.one('punters', punterId)
-	var updateData = function() {
-		punter.get().then(function(res) {
-			$scope.data = res;
-			$scope.loading = false;
-		});
-		punter.getList('entitlement_details').then(function(res) {
-			$scope.entitlement_details = res;
-		});
-		punter.getList('tickets').then(function(res) {
-			$scope.tickets = res;
-		});
-	};
-	updateData();
-
-	$scope.editData = function() {
-		$scope.edit_data = Restangular.copy($scope.data);
-		$scope.data_editing = true;
-	};
-	$scope.cancelEditData = function() {
-		$scope.data_editing = false;
-	};
-	$scope.saveEditData = function() {
-		$scope.data = $scope.edit_data;
-		$scope.edit_data.put().then(updateData);
-		$scope.data_editing = false;
-	};
-
-	$scope.punterTypeToString = function(type) {
-		switch (type) {
-			case 'full':
-				return "Full member";
-			case 'associate':
-				return "Associate/life member";
-			case 'public':
-				return "Public (not a Union member)";
-		}
-		return "Unknown"
-	};
-
-	$scope.entitlementClass = function(en) {
-		var classes = ['entitlement'];
-		if (en.valid) {
-			classes.push('valid');
-		} else {
-			classes.push('invalid');
-		}
-
-		return classes.join(' ');
-	};
-
-	$scope.editEntitlementDetail = function(ed) {
-		if (!ed.orig)
-                        ed.orig = Restangular.copy(ed);
-		ed.edit = Restangular.copy(ed.orig);
-		ed.editing = true;
-	};
-	$scope.cancelEditEntitlementDetail = function(ed) {
-		ed.editing = false;
-	};
-	$scope.saveEditEntitlementDetail = function(ed) {
-		ed.edit.put().then(updateData);
-		for (var n in ed.edit) {
-			if (!ed.edit.hasOwnProperty(n)) continue;
-			ed[n] = ed.orig[n] = ed.edit[n];
-		}
-		ed.editing = false;
-	};
-});
-
-app.controller('BorWizardCtrl', function($rootScope, $scope, Restangular, $route, $routeParams, $q, djurl) {
-	$rootScope.navName = 'films';
-
-	$scope.loading = true;
-	$scope.stage = 'cleanData';
-	$scope.show_week = $routeParams.show_week;
-
-	var last_bor_data;
-	var film = Restangular.one('films', $routeParams.id);
-	$q.all(
-		film.get().then(function(res) {
-			$scope.film = res;
-		}),
-		film.customGET('bor-data/' + $scope.show_week).then(function(res) {
-			// now I need to de-Restangular this
-			var new_res = {};
-			for (var x in res) {
-				if (!res.hasOwnProperty(x)) continue;
-				var y = res[x];
-				if (!y || (!y.length && y.length !== 0) || y.apply || y.charAt) continue;
-				new_res[x] = y;
-			}
-			$scope.bor_data = new_res;
-			last_bor_data = null;
-		})
-	).then(function() {
-		$scope.loading = false;
-	});
-
-	$scope.totalAttr = function(arr, attr) {
-		var out = 0;
-		for (var i = 0; i < arr.length; i++) {
-			out += arr[i][attr];
-		}
-		return out;
-	};
-	$scope.deepTotalAttr = function(bor_data, attr) {
-		var out = 0;
-		for (var k in bor_data) {
-			if (!bor_data.hasOwnProperty(k)) continue;
-			out += $scope.totalAttr(bor_data[k], attr);
-		}
-		return out;
-	};
-	$scope.addRow = function(arr) {
-		arr.push({
-			"sold_tickets": 0, "refund": 0, "ticket_type": "Adult", "price": 300, "take": 0, "refund_count": 0
-		});
-	};
-	$scope.delRow = function(wrapper, index) {
-		wrapper.splice(index, 1);
-	};
-
-	var getCsrfToken = function() {
-		var cookieBits = document.cookie.split(', ');
-		for (var i = 0; i < cookieBits.length; i++) {
-			var z = cookieBits[i].split('=');
-			if (z[0] !== 'csrftoken') continue;
-			var val = '';
-			for (var q = 1; q < z.length; q += 1) {
-				val += z[q];
-				if (q != (z.length - 1)) val += '=';
-			}
-			return val;
-		}
-	};
-	var csrftoken = getCsrfToken();
-
-	$scope.canSubmitForm = function() {
-		if (!last_bor_data) return false;
-		for (var k in last_bor_data) {
-			if (!last_bor_data.hasOwnProperty(k)) continue;
-			var v = last_bor_data[k];
-			for (var i = 0; i < v.length; i++) {
-				var x = v[i];
-				for (var q in x) {
-					if (!x.hasOwnProperty(q)) continue;
-					if (last_bor_data[k][i][q] != $scope.bor_data[k][i][q]) return false;
-				}
-			}
-		}
-		return true;
-	};
-
-	var sendIframeToUrl = function(target_url) {
-		var iframe = document.getElementById('draft_bor_iframe');
-		iframe.setAttribute('srcdoc', '<!DOCTYPE html><html><body><script type="text/json">' + JSON.stringify($scope.bor_data) + '</script><script>document.addEventListener("DOMContentLoaded", function() { var s = document.querySelector("script[type=\\\"text/json\\\"]");console.log(s, s.innerText);var data = s.textContent, f = document.getElementById("getpdfform"), inp = document.getElementById("getpdfjson"); inp.value = data; f.submit(); });</script><form style="visibility: hidden;" action="' + target_url + '" id="getpdfform" method="POST"><input type="hidden" name="csrfmiddlewaretoken" value="' + csrftoken + '"><input type="hidden" id="getpdfjson" name="jsondata"></form></body></html>');
-	};
-	var fullScreenIframe = function() {
-		var iframeWrapper = document.getElementById('draft_bor_iframe_wrapper');
-		var prefixes = ['r', 'webkitR', 'mozR'];
-		for (var i = 0; i < prefixes.length; i++) {
-			if (!iframeWrapper[prefixes[i] + 'equestFullScreen']) continue;
-			iframeWrapper[prefixes[i] + 'equestFullScreen']()
-		}
-	};
-
-	$scope.regenerateDraftBor = function() {
-		var target_url = djurl.api_root + 'films/' + $routeParams.id + '/generate-bor-pdf/' + $routeParams.show_week + '/';
-		sendIframeToUrl(target_url);
-		fullScreenIframe();
-		
-		last_bor_data = angular.copy($scope.bor_data);
-	};
-
-	$scope.submitBor = function() {
-		if (!$scope.canSubmitForm()) return;
-
-		var target_url = djurl.api_root + 'films/' + $routeParams.id + '/generate-bor-pdf/' + $routeParams.show_week + '/?save=true';
-		sendIframeToUrl(target_url);
-	};
-});
-
 app.controller('ShowingWizardCtrl', function($rootScope, $scope, Restangular, $q, $route) {
 	$rootScope.navName = 'showingwizard';
 
@@ -992,112 +457,4 @@ app.controller('ShowingWizardCtrl', function($rootScope, $scope, Restangular, $q
 		}
 	};
 });
-app.controller('DistributorsCtrl', function($rootScope, $scope, $routeParams, $location, Restangular) {
-	$rootScope.navName = 'distributors';
 
-	var thisPage = parseInt($routeParams.page, 10);
-	if (thisPage != $routeParams.page) {
-		$location.search('page', 1);
-		return;
-	}
-
-	var perPage = parseInt($routeParams.perPage, 10);
-	if (isNaN(perPage) || perPage < 5) {
-		perPage = 10;
-	}
-
-	var sobj = {
-	       page: thisPage,
-	       per_page: perPage
-	};
-	$scope.retrieve = sobj;
-
-	var distributors = Restangular.all('distributors');
-	var updateData = function() {
-        	distributors.getList(sobj).then(function(res) {
-			var startRecord = ((thisPage-1) * perPage) + 1;
-			var endRecord = (startRecord + res.length) - 1;
-			$scope.data = {
-				'startAt': startRecord,
-				'endAt': endRecord,
-				'results': res,
-				'next': (res._resultmeta.next ? thisPage+1 : null),
-				'previous': (res._resultmeta.previous ? thisPage-1 : null),
-				'count': res._resultmeta.count
-			}
-		});
-	};
-	updateData();
-
-	$scope.search = function(q) {
-		sobj.search = q;
-		updateFilmData();
-	};
-
-	$scope.goTo = function(where) {
-		if (!where) return;
-		$location.search('page', where);
-	};
-
-	$scope.buttonClass = function(pageNum) {
-		if (!pageNum) return 'default';
-		return 'secondary';
-	};
-
-	$scope.addDistributor = function(distributor) {
-		distributors.post(distributor).then(function() {
-			updateData();
-		});
-	};
-});
-app.controller('DistributorCtrl', function($rootScope, $scope, $routeParams, $location, Restangular, djurl) {
-	$rootScope.navName = 'distributors';
-
-	$scope.mediaify = function(url) {
-		if (!url) return;
-		if (url.length > 1 && url[0] == '/') url = url.substring(1);
-		return djurl.media_root + url;
-	}
-
-	$scope.editing = false;
-	$scope.loading = true;
-
-	var distributorId = parseInt($routeParams.id, 10);
-
-	var distributor = Restangular.one('distributors', distributorId);
-	distributor.get().then(function(res) {
-		$scope.loading = false;
-		$scope.data = res;
-	});
-	distributor.getList('films').then(function(res) {
-		$scope.films = res;
-	});
-
-	$scope.edit = function() {
-		$scope.edit_data = Restangular.copy($scope.data);
-		$scope.editing = true;
-	};
-
-	$scope.cancelEdit = function() {
-		$scope.editing = false;
-	};
-	$scope.saveEdit = function() {
-		$scope.data = $scope.edit_data;
-		$scope.data.put();
-		$scope.editing = false;
-	};
-});
-
-app.controller('TicketCtrl', function($rootScope, $scope, $routeParams, $location, Restangular, $timeout) {
-	$rootScope.navName = 'tickets';
-
-	$scope.loading = true;
-
-	var ticketId = parseInt($routeParams.id, 10);
-
-	var ticket = Restangular.one('tickets', ticketId);
-	ticket.get().then(function(res) {
-		$scope.loading = false;
-		$scope.data = res;
-	});
-});
