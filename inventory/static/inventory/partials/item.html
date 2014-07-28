@@ -1,19 +1,23 @@
 <div ng-show="loading"><h2>Loading...</h2></div>
 <div ng-if="!loading">
-	<h2><div class="btn primary large" ng-click="hBack()"><a href><i class="icon-arrow-left"></i></a></div> {{ data.film_title }}</span></h2>
+	<h2><div class="btn primary large" ng-click="hBack()"><a href><i class="icon-arrow-left"></i></a></div> {{ data.name }}</span></h2>
 	<tabs>
 		<tab tab-title="Information">
 			<dl>
-				<dt>Film</dt>
-					<dd><a ng-href="#/films/{{ data.film.id }}">{{ data.film_title }}</a></dd>
-				<dt>Start time</dt>
-					<dd>{{ data.start_time | date:"short" }}</dd>
+				<dt>Asset ID</dt><dd>{{ data.id }}</dd>
+        <dt>Name</dt><dd>{{ data.name }}</dd>
+				<dt>Details</dt><dd>{{ data.details }}</dd>
+        <dt>Purchase Date</dt><dd>{{ data.purchase_date | date : 'dd/MM/yy' }}</dd>
+        <dt>Purchase Price</dt><dd>&pound;{{ data.purchase_price | number : 2 }}</dd>
+        <dt>Original Supplier</dt><dd>{{ data.supplier.name }}</dd>
+        <dt>Category</dt><dd>{{ data.category.name }}</dd>
+        <dt>Status</dt><dd>{{ data.status.name }}</dd>
+        <dt>Owner</dt><dd>{{ data.owner.name }}</dd>
+        <dt>Responsible Comittee Position</dt><dd>{{ data.responsible_position.name }}</dd>
+        <dt>Home</dt><dd>{{ data.home.name }}</dd>
 			</dl>
 		</tab>
-		<tab tab-title="Tickets ({{ tickets.length }})">
-			<input type="checkbox" ng-model="ticketsAutoRefresh" id="autorefresh" ng-change="ticketsAutoRefreshChange(ticketsAutoRefresh)">
-				<label for="autorefresh">Autorefresh?</label>
-
+		<tab tab-title="Quotes ({{ quotes.length }})">
 			<table class="striped">
 				<thead>
 					<tr>

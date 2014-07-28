@@ -201,56 +201,20 @@ app.controller('ItemsCtrl', function($rootScope, $scope, $routeParams, $location
 		return '#/item/' + item.id;
 	};
 });
-app.controller('ShowingCtrl', function($rootScope, $scope, $routeParams, $location, Restangular, $timeout) {
-	$rootScope.navName = 'showings';
+app.controller('ItemCtrl', function($rootScope, $scope, $routeParams, $location, Restangular, $timeout) {
+	$rootScope.navName = 'item';
 
 	$scope.loading = true;
 
-	var showingId = parseInt($routeParams.id, 10);
+	var itemId = parseInt($routeParams.id, 10);
 
-	var showing = Restangular.one('showings', showingId);
-	showing.get().then(function(res) {
+	var item = Restangular.one('item', itemId);
+	item.get().then(function(res) {
 		$scope.loading = false;
 		$scope.data = res;
 	});
-	showing.getList('tickets').then(function(res) {
-		$scope.tickets = res;
-	});
-
-	$scope.filmUrl = function(film) {
-                var filmId = film.split('/').reverse()[1];
-		return '#/films/' + filmId;
-	};
-	$scope.punterUrl = function(punter) {
-		if (!punter) return '';
-		return '#/punters/' + punter.id;
-	};
-
-	var ticketsAutoRefreshPromise;
-	var ticketsAutoRefresh;
-	var autoRefreshTickets = function() {
-		showing.getList('tickets').then(function(res) {
-			if (!ticketsAutoRefresh) return;
-			$scope.tickets = res;
-		}).then(function() {
-			if (!ticketsAutoRefresh) return;
-			ticketsAutoRefreshPromise = $timeout(autoRefreshTickets, 10000);
-		});
-	};
-
-	$scope.ticketsAutoRefreshChange = function(tar) {
-		ticketsAutoRefresh = tar;
-		if (!tar) {
-			$timeout.cancel(ticketsAutoRefreshPromise);
-		} else {
-			autoRefreshTickets();
-		}
-	};
-	ticketsAutoRefresh = $scope.ticketsAutoRefresh = false;
-
-	$scope.$on('$destroy', function() {
-		ticketsAutoRefresh = false;
-		$timeout.cancel(ticketsAutoRefreshPromise);
+	item.getList('notes').then(function(res) {
+		$scope.notes = res;
 	});
 });
 app.controller('ShowingWizardCtrl', function($rootScope, $scope, Restangular, $q, $route) {
