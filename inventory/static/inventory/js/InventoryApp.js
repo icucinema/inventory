@@ -205,6 +205,7 @@ app.controller('ItemCtrl', function($rootScope, $scope, $routeParams, $location,
 	$rootScope.navName = 'item';
 
 	$scope.loading = true;
+    $scope.editing = false;
 
 	var itemId = parseInt($routeParams.id, 10);
 
@@ -216,6 +217,27 @@ app.controller('ItemCtrl', function($rootScope, $scope, $routeParams, $location,
 	item.getList('notes').then(function(res) {
 		$scope.notes = res;
 	});
+
+    var suppliers = Restangular.all('supplier');
+    suppliers.getList().then(function(res) {
+        $scope.suppliers = res;
+    });
+
+    $scope.edit = function() {
+        $scope.edit_data = Restangular.copy($scope.data);
+        $scope.edit_data.supplier = $scope.edit_data.supplier.url;
+        $scope.editing = true;
+    };
+
+    $scope.cancelEdit = function() {
+        $scope.editing = false;
+    };
+
+    $scope.saveEdit = function() {
+        $scope.data = $scope.edit_data;
+        $scope.data.put();
+        $scope.editing = false;
+    };
 });
 app.controller('ShowingWizardCtrl', function($rootScope, $scope, Restangular, $q, $route) {
 	$rootScope.navName = 'showingwizard';
