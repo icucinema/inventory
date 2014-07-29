@@ -217,6 +217,13 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
 	item.getList('notes').then(function(res) {
 		$scope.notes = res;
 	});
+    item.getList('pictures').then(function(res) {
+		$scope.pictures = res;
+	});
+    item.getList('quotes').then(function(res) {
+		$scope.quotes = res;
+	});
+
 
     var suppliers = Restangular.all('supplier');
     suppliers.getList().then(function(res) {
@@ -264,10 +271,28 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
         $scope.editing = false;
     };
 
+    function retrieveObject(list, url) {
+        for (i=0; i < list.length; i++) {
+            if (list[i].url == url) {
+                return list[i];
+            }
+        }
+    }
+
     $scope.saveEdit = function() {
         $scope.data = $scope.edit_data;
+        $scope.data.purchase_date = moment($scope.data.purchase_date, "DD/MM/YYYY").format("YYYY-MM-DD");
         $scope.data.put();
+        
+        $scope.data.supplier = retrieveObject($scope.suppliers, $scope.data.supplier);
+        $scope.data.category = retrieveObject($scope.itemCategories, $scope.data.category);
+        $scope.data.status = retrieveObject($scope.itemStatuses, $scope.data.status);
+        $scope.data.owner = retrieveObject($scope.itemOwners, $scope.data.owner);
+        $scope.data.responsible_position = retrieveObject($scope.itemResponsiblePositions, $scope.data.responsible_position);
+        $scope.data.home = retrieveObject($scope.itemHomes, $scope.data.home);
+
         $scope.editing = false;
+
     };
 });
 app.controller('ShowingWizardCtrl', function($rootScope, $scope, Restangular, $q, $route) {

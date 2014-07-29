@@ -45,7 +45,12 @@ class ItemViewSet(viewsets.ModelViewSet):
         item = self.get_object()
         return serialize_queryset(self, QuoteSerializer, item.quotes.all())
 
-
+    @action()
+    def update_remote(self, request, pk=None):
+        item = self.get_object()
+        item.update_remote()
+        item.save()
+        return Response(ItemSerializer(item).data)
 
 class ItemCategoryViewSet(viewsets.ModelViewSet):
     queryset = ItemCategory.objects.all()

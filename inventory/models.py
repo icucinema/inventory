@@ -60,6 +60,9 @@ class Item(models.Model):
     def __unicode__(self):
         return u'['+str(self.id)+u'] '+self.name
 
+    def update_remote(self):
+        pass
+
 # Things that can be attached to an item
 
 class ItemNote(models.Model):
