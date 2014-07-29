@@ -201,7 +201,7 @@ app.controller('ItemsCtrl', function($rootScope, $scope, $routeParams, $location
 		return '#/item/' + item.id;
 	};
 });
-app.controller('ItemCtrl', function($rootScope, $scope, $routeParams, $location, Restangular, $timeout) {
+app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $location, Restangular, $timeout) {
 	$rootScope.navName = 'item';
 
 	$scope.loading = true;
@@ -223,9 +223,40 @@ app.controller('ItemCtrl', function($rootScope, $scope, $routeParams, $location,
         $scope.suppliers = res;
     });
 
+    var itemCategories = Restangular.all('itemcategory');
+    itemCategories.getList().then(function(res) {
+        $scope.itemCategories = res;
+    });
+
+    var itemStatuses = Restangular.all('itemstatus');
+    itemStatuses.getList().then(function(res) {
+        $scope.itemStatuses = res;
+    });
+
+    var itemOwners = Restangular.all('itemowner');
+    itemOwners.getList().then(function(res) {
+        $scope.itemOwners = res;
+    });
+
+    var itemResponsiblePositions = Restangular.all('itemresponsibleposition');
+    itemResponsiblePositions.getList().then(function(res) {
+        $scope.itemResponsiblePositions = res;
+    });
+
+    var itemHomes = Restangular.all('itemhome');
+    itemHomes.getList().then(function(res) {
+        $scope.itemHomes = res;
+    });
+
     $scope.edit = function() {
         $scope.edit_data = Restangular.copy($scope.data);
+        $scope.edit_data.purchase_date = $filter('date')($scope.edit_data.purchase_date, "dd/MM/yyyy");
         $scope.edit_data.supplier = $scope.edit_data.supplier.url;
+        $scope.edit_data.category = $scope.edit_data.category.url;
+        $scope.edit_data.status = $scope.edit_data.status.url;
+        $scope.edit_data.owner = $scope.edit_data.owner.url;
+        $scope.edit_data.responsible_position = $scope.edit_data.responsible_position.url;
+        $scope.edit_data.home = $scope.edit_data.home.url;
         $scope.editing = true;
     };
 
