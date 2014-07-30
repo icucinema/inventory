@@ -35,7 +35,7 @@ class SupplierSerializer(HyperlinkedModelSerializer):
 class ItemNoteSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.ItemNote
-        fields = ('url', 'id', 'text', 'item')
+        fields = ('url', 'id', 'text', 'item', 'date_added')
 
 class ItemPictureSerializer(HyperlinkedModelSerializer):
     class Meta:

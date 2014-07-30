@@ -73,7 +73,8 @@ class Migration(SchemaMigration):
         db.create_table(u'inventory_itemnote', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('text', self.gf('django.db.models.fields.TextField')()),
-            ('item', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.Item'])),
+            ('item', self.gf('django.db.models.fields.related.ForeignKey')(related_name='notes', to=orm['inventory.Item'])),
+            ('date_added', self.gf('django.db.models.fields.DateField')()),
         ))
         db.send_create_signal(u'inventory', ['ItemNote'])
 
@@ -81,7 +82,7 @@ class Migration(SchemaMigration):
         db.create_table(u'inventory_itempicture', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=100)),
-            ('item', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.Item'])),
+            ('item', self.gf('django.db.models.fields.related.ForeignKey')(related_name='pictures', to=orm['inventory.Item'])),
         ))
         db.send_create_signal(u'inventory', ['ItemPicture'])
 
@@ -93,7 +94,7 @@ class Migration(SchemaMigration):
             ('date', self.gf('django.db.models.fields.DateField')()),
             ('quote_url', self.gf('django.db.models.fields.URLField')(max_length=1000, blank=True)),
             ('notes', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('item', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.Item'])),
+            ('item', self.gf('django.db.models.fields.related.ForeignKey')(related_name='quotes', to=orm['inventory.Item'])),
         ))
         db.send_create_signal(u'inventory', ['Quote'])
 
@@ -158,8 +159,9 @@ class Migration(SchemaMigration):
         },
         u'inventory.itemnote': {
             'Meta': {'object_name': 'ItemNote'},
+            'date_added': ('django.db.models.fields.DateField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'item': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.Item']"}),
+            'item': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'notes'", 'to': u"orm['inventory.Item']"}),
             'text': ('django.db.models.fields.TextField', [], {})
         },
         u'inventory.itemowner': {
@@ -172,7 +174,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'ItemPicture'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100'}),
-            'item': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.Item']"})
+            'item': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'pictures'", 'to': u"orm['inventory.Item']"})
         },
         u'inventory.itemresponsibleposition': {
             'Meta': {'object_name': 'ItemResponsiblePosition'},
@@ -189,7 +191,7 @@ class Migration(SchemaMigration):
             'amount': ('django.db.models.fields.DecimalField', [], {'max_digits': '14', 'decimal_places': '2'}),
             'date': ('django.db.models.fields.DateField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'item': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.Item']"}),
+            'item': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'quotes'", 'to': u"orm['inventory.Item']"}),
             'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'quote_url': ('django.db.models.fields.URLField', [], {'max_length': '1000', 'blank': 'True'}),
             'supplier': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.Supplier']"})

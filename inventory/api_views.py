@@ -80,6 +80,13 @@ class ItemNoteViewSet(viewsets.ModelViewSet):
     queryset = ItemNote.objects.all()
     serializer_class = ItemNoteSerializer
 
+    @action()
+    def update_remote(self, request, pk=None):
+        note = self.get_object()
+        note.update_remote()
+        note.save()
+        return Response(ItemNoteSerializer(note).data)
+
 class ItemPictureViewSet(viewsets.ModelViewSet):
     queryset = ItemPicture.objects.all()
     serializer_class = ItemPictureSerializer

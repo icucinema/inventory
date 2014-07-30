@@ -68,9 +68,13 @@ class Item(models.Model):
 class ItemNote(models.Model):
     text = models.TextField()
     item = models.ForeignKey(Item, related_name='notes')
+    date_added = models.DateField()
 
     def __unicode__(self):
         return u"Note ["+str(self.id)+u"] on Item ["+str(self.item.id)+u"]"
+
+    def update_remote(self):
+        pass
 
 class ItemPicture(models.Model):
     image = models.ImageField(upload_to="inventory_image")    

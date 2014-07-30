@@ -294,6 +294,28 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
         $scope.editing = false;
 
     };
+
+});
+
+app.controller('NoteCtrl', function($rootScope, $scope, $filter, $routeParams, $location, Restangular, $timeout) {
+
+    $scope.editing = false;
+
+    $scope.editNote = function (index) {
+        $scope.edit_data = Restangular.copy($scope.notes[index]);
+        $scope.editing = true;
+    };
+
+    $scope.cancelEditNote = function() {
+        $scope.editing = false;
+    };
+
+    $scope.saveEditNote = function(index) {
+        $scope.notes[index] = $scope.edit_data;
+        $scope.notes[index].put();
+        $scope.editing = false;
+    };
+
 });
 app.controller('ShowingWizardCtrl', function($rootScope, $scope, Restangular, $q, $route) {
 	$rootScope.navName = 'showingwizard';
