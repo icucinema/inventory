@@ -214,9 +214,12 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
 		$scope.loading = false;
 		$scope.data = res;
 	});
-	item.getList('notes').then(function(res) {
-		$scope.notes = res;
-	});
+    var updateNotesData = function() {
+        item.getList('notes').then(function(res) {
+            $scope.notes = res;
+        });
+    };
+    updateNotesData();
     item.getList('pictures').then(function(res) {
 		$scope.pictures = res;
 	});
@@ -293,6 +296,16 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
 
         $scope.editing = false;
 
+    };
+
+    $scope.addNote = function(note) {
+        console.log("add called.");
+        note.item = $scope.data.url;
+        note.date_added = moment().format("YYYY-MM-DD");
+        Restangular.all('itemnote').post(note).then(function() {
+            updateNotesData();
+            note.text = "";
+        });
     };
 
 });

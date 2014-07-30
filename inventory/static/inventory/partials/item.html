@@ -90,7 +90,20 @@
 					</tr>
 				</tbody>
 			</table>
-		</tab>
+		  <h3>Add Note</h3>
+      <form ng-submit="addNote(newNote)">
+        <ul>
+          <li class="field">
+            <label class="inline" for="manual-text">Text</label>
+            <textarea class="xxwide textarea input" id="manual-text" ng-model="newNote.text"></textarea>
+          </li>
+          <li>
+            <div class="norm primary btn">
+              <input type="submit" value="Add"></div>
+          </li>
+        </ul>
+      </form>
+    </tab>
 		<tab tab-title="Pictures ({{ pictures.length }})">
 			<table class="striped">
 				<thead>

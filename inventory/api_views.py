@@ -80,7 +80,7 @@ class ItemNoteViewSet(viewsets.ModelViewSet):
     queryset = ItemNote.objects.all()
     serializer_class = ItemNoteSerializer
 
-    @action()
+    @action(methods=["put"])
     def update_remote(self, request, pk=None):
         note = self.get_object()
         note.update_remote()
