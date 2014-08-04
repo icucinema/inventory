@@ -42,6 +42,10 @@ app.config(['djurl', '$routeProvider', '$httpProvider', 'RestangularProvider', f
 			templateUrl: djurl.partial_root + 'additem.html',
 			controller: 'ItemAddCtrl'
 		}).
+        when('/item/add/:id', {
+            templateUrl: djurl.partial_root + 'additem.html',
+            controller: 'ItemAddCtrl'
+        }).
 		when('/item/:id', {
 			templateUrl: djurl.partial_root + 'item.html',
 			controller: 'ItemCtrl'
@@ -279,6 +283,10 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
         $scope.editing = true;
     };
 
+    $scope.duplicate = function() {
+        $location.path("/item/add/"+$scope.data.id);
+    };
+
     $scope.cancelEdit = function() {
         $scope.editing = false;
     };
@@ -343,7 +351,7 @@ app.controller('NoteCtrl', function($rootScope, $scope, $filter, $routeParams, $
 
 });
 
-app.controller('ItemAddCtrl', function($rootScope, $scope, Restangular, $location) {
+app.controller('ItemAddCtrl', function($rootScope, $scope, Restangular, $location, $routeParams, $filter) {
     
     $rootScope.navName = 'additem';
     $scope.loading = true;
@@ -377,6 +385,25 @@ app.controller('ItemAddCtrl', function($rootScope, $scope, Restangular, $locatio
     itemHomes.getList().then(function(res) {
         $scope.itemHomes = res;
     });
+
+    // Handle duplicating existing item.
+	var itemId = parseInt($routeParams.id, 10);
+
+    if (itemId > 0) {
+        var item = Restangular.one('item', itemId);
+        item.get().then(function(res) {
+            $scope.loading = false;
+            $scope.item = res;
+
+            $scope.item.purchase_date = $filter('date')($scope.item.purchase_date, "dd/MM/yyyy");
+            $scope.item.supplier = $scope.item.supplier.url;
+            $scope.item.category = $scope.item.category.url;
+            $scope.item.status = $scope.item.status.url;
+            $scope.item.owner = $scope.item.owner.url;
+            $scope.item.responsible_position = $scope.item.responsible_position.url;
+            $scope.item.home = $scope.item.home.url;
+        });
+    }
 
     $scope.loading = false;
 
