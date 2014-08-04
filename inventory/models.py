@@ -6,11 +6,17 @@ class ItemCategory(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=254)
 
+    class Meta:
+        ordering = ['name']
+
     def __unicode__(self):
         return self.name
 
 class ItemStatus(models.Model):
     name = models.CharField(max_length=200)
+
+    class Meta:
+        ordering = ['name']
 
     def __unicode__(self):
         return self.name
@@ -19,17 +25,26 @@ class ItemOwner(models.Model):
     name = models.CharField(max_length=200)
     email = models.EmailField(max_length=254)
 
+    class Meta:
+        ordering = ['name']
+
     def __unicode__(self):
         return self.name
 
 class ItemResponsiblePosition(models.Model):
     name = models.CharField(max_length=200)
 
+    class Meta:
+        ordering = ['name']
+
     def __unicode__(self):
         return self.name
 
 class ItemHome(models.Model):
     name = models.CharField(max_length=200)
+
+    class Meta:
+        ordering = ['name']
 
     def __unicode__(self):
         return self.name
@@ -39,6 +54,9 @@ class ItemHome(models.Model):
 class Supplier(models.Model):
     name = models.CharField(max_length=200)
     supplier_url = models.URLField(max_length=1000, blank=True)
+
+    class Meta:
+        ordering = ['name']
 
     def __unicode__(self):
         return self.name
@@ -57,6 +75,9 @@ class Item(models.Model):
     home = models.ForeignKey(ItemHome)
     supplier = models.ForeignKey(Supplier)
 
+    class Meta:
+        ordering = ['name']
+
     def __unicode__(self):
         return u'['+str(self.id)+u'] '+self.name
 
@@ -69,6 +90,9 @@ class ItemNote(models.Model):
     text = models.TextField()
     item = models.ForeignKey(Item, related_name='notes')
     date_added = models.DateField()
+
+    class Meta:
+        ordering = ['-date_added']
 
     def __unicode__(self):
         return u"Note ["+str(self.id)+u"] on Item ["+str(self.item.id)+u"]"
@@ -92,6 +116,9 @@ class Quote(models.Model):
     quote_url = models.URLField(max_length=1000,blank=True)
     notes = models.TextField(blank=True)
     item = models.ForeignKey(Item, related_name='quotes')
+
+    class Meta:
+        ordering = ['-date']
 
     def __unicode__(self):
         return u"Quote ["+str(self.id)+u"] on Item ["+str(self.item.id)+u"]"
