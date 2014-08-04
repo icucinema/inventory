@@ -43,9 +43,17 @@ class ItemPictureSerializer(HyperlinkedModelSerializer):
         fields = ('url', 'id', 'image')
 
 class QuoteSerializer(HyperlinkedModelSerializer):
+    supplier = SupplierSerializer()
+
     class Meta:
         model = models.Quote
         fields = ('url', 'id', 'supplier', 'amount', 'date', 'quote_url', 'notes', 'item')
+
+class FlatQuoteSerializer(HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Quote
+        fields = ('url', 'id', 'supplier', 'amount', 'date', 'quote_url', 'notes', 'item')
+
 
 class ItemSerializer(HyperlinkedModelSerializer):
     category = ItemCategorySerializer()

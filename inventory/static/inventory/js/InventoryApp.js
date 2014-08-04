@@ -6,6 +6,14 @@ var app = angular.module('InventoryApp', [
     'angularFileUpload',
 ]);
 
+function retrieveObject(list, url) {
+    for (i=0; i < list.length; i++) {
+        if (list[i].url == url) {
+            return list[i];
+        }
+    }
+}
+
 app.constant('djurl', __djurls);
 
 app.config(['djurl', '$routeProvider', '$httpProvider', 'RestangularProvider', function(djurl, $routeProvider, $httpProvider, RestangularProvider) {
@@ -241,23 +249,26 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
 		$scope.data = res;
 	});
  
-   var updateNotesData = function() {
+    var updateNotesData = function() {
         item.getList('notes').then(function(res) {
             $scope.notes = res;
         });
     };
     updateNotesData();
  
-   var updatePicturesData = function() {
+    var updatePicturesData = function() {
         item.getList('pictures').then(function(res) {
             $scope.pictures = res;
         });
     };
     updatePicturesData();
  
-    item.getList('quotes').then(function(res) {
-		$scope.quotes = res;
-	});
+    var updateQuotesData = function() {
+        item.getList('quotes').then(function(res) {
+            $scope.quotes = res;
+        });
+    };
+    updateQuotesData();
 
     var suppliers = Restangular.all('supplier');
     suppliers.getList().then(function(res) {
@@ -309,14 +320,6 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
         $scope.editing = false;
     };
 
-    function retrieveObject(list, url) {
-        for (i=0; i < list.length; i++) {
-            if (list[i].url == url) {
-                return list[i];
-            }
-        }
-    }
-
     $scope.saveEdit = function() {
         $scope.data = $scope.edit_data;
         $scope.data.purchase_date = moment($scope.data.purchase_date, "DD/MM/YYYY").format("YYYY-MM-DD");
@@ -343,6 +346,19 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
         Restangular.all('itemnote').post(note).then(function() {
             updateNotesData();
             note.text = "";
+        });
+    };
+
+    $scope.addQuote = function(quote) {
+        quote.item = $scope.data.url;
+        quote.date = moment(quote.date, "DD/MM/YYYY").format("YYYY-MM-DD");
+        Restangular.all('quote').post(quote).then(function() {
+            updateQuotesData();
+            quote.date = "";
+            quote.amount = "";
+            quote.supplier = "";
+            quote.quote_url = "";
+            quote.notes = "";
         });
     };
 
@@ -378,6 +394,35 @@ app.controller('NoteCtrl', function($rootScope, $scope, $filter, $routeParams, $
         $scope.notes[index] = $scope.edit_data;
         $scope.notes[index].put();
         $scope.editing = false;
+    };
+
+});
+
+app.controller('QuoteCtrl', function($rootScope, $scope, $filter, $routeParams, $location, Restangular, $timeout) {
+
+    $scope.editing = false;
+
+    $scope.editQuote = function (index) {
+        $scope.edit_data = Restangular.copy($scope.quotes[index]);
+        $scope.edit_data.date = $filter('date')($scope.edit_data.date, "dd/MM/yyyy");
+        $scope.edit_data.supplier = $scope.edit_data.supplier.url;
+        $scope.editing = true;
+    };
+
+    $scope.cancelEditQuote = function() {
+        $scope.editing = false;
+    };
+
+    $scope.saveEditQuote = function(index) {
+        $scope.quotes[index] = $scope.edit_data;
+        $scope.quotes[index].date = moment($scope.edit_data.date, "DD/MM/YYYY").format("YYYY-MM-DD");
+        
+        $scope.quotes[index].put();
+        
+        $scope.quotes[index].supplier = retrieveObject($scope.suppliers, $scope.edit_data.supplier);
+
+        $scope.editing = false;
+
     };
 
 });

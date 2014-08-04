@@ -133,4 +133,9 @@ class QuoteViewSet(ReversionModelViewSet):
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return self.serializer_class
+        return FlatQuoteSerializer
+
 

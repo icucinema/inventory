@@ -120,8 +120,77 @@
            ng-show="!dropSupported"></div>
 	  </tab>
 		<tab tab-title="Quotes ({{ quotes.length }})">
-      <h3>This feature is not yet implemented.</h3>
-		</tab>
+		  <table class="striped">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Supplier</th>
+            <th>Amount</th>
+            <th>Link</th>
+            <th>Notes</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-controller="QuoteCtrl" ng-repeat="quote in quotes track by quote.id" class="dn-bounce">
+            <td>
+              <span ng-hide="editing">{{ quote.date | date : "dd/MM/yyyy" }}</span>
+              <span ng-show="editing"><input type="text" class="narrow text input" placeholder="dd/mm/yyyy" ng-model="edit_data.date" ng-pattern="/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d\d/"></span> 
+            </td>
+            <td>
+              <span ng-hide="editing">{{ quote.supplier.name }}</span>
+              <span ng-show="editing"><select class="xxwide select input" ng-model="edit_data.supplier" ng-options="supplier.url as supplier.name for supplier in suppliers"></select></span>
+            </td>
+            <td>
+              <span ng-hide="editing">{{ quote.amount | currency : "&pound;" }}</span>
+              <span ng-show="editing"><input type="text" class="text input" ng-model="edit_data.amount"></span>
+            </td>
+            <td>
+              <span ng-hide="editing"><a href="{{ quote.quote_url }}" target="_blank">Link</a></span>
+              <span ng-show="editing"><input type="text" class="text input" ng-model="edit_data.quote_url"></span>
+            </td>
+            <td>
+              <span ng-hide="editing">{{ quote.notes }}</span>
+              <span ng-show="editing"><textarea class="text textarea" ng-model="edit_data.notes"></textarea></span>
+            </td>
+            <td>
+              <div class="btn primary norm" ng-click="editQuote($index)" ng-hide="editing"><a href>Edit</a></div>
+              <ul ng-show="editing">
+                <li><div class="btn primary norm" ng-click="saveEditQuote($index)"><a href>Save</a></div></li>
+                <li><div class="btn danger norm" ng-click="cancelEditQuote()"><a href>Cancel</a></div></li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>Add Quote</h3>
+      <form ng-submit="addQuote(newQuote)">
+        <dt>Quote Date <small>The date on which the quote was issued.</small></dt>
+          <dd class="field">
+            <input type="text" class="xxwide text input" placeholder="dd/mm/yyyy" ng-model="newQuote.date" ng-pattern="/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d\d/">
+          </dd>
+          <dt>Total Amount <small>The total amount in GBP of the quote, excluding VAT and any additional items listed on the same quote.</small></dt>
+          <dd class="field">
+            <input type="text" class="xxwide text input" ng-model="newQuote.amount">
+          </dd>
+          <dt>Supplier <small>The company the quote was provided by.</small></dt>
+          <dd class="field">
+            <select class="xxwide select input" ng-model="newQuote.supplier" ng-options="supplier.url as supplier.name for supplier in suppliers"></select>
+          </dd>
+          <dt>Link <small>A Link to the quotation document, if applicable.</small></dt>
+          <dd class="field">
+            <input type="text" class="xxwide text input" ng-model="newQuote.quote_url">
+          </dd>
+          <dt>Notes <small>Any other information to attach to this quote record.</small></dt>
+          <dd class="field">
+            <textarea class="xxwide input textarea" ng-model="newQuote.notes"></textarea>
+          </dd>
+          <div class="norm primary btn">
+              <input type="submit" value="Add"></div>
+          </li>
+        </ul>
+      </form>
+    </tab>
 		<tab tab-title="History ({{ history.length }})">
       <h3>This feature is not yet implemented.</h3>
 	  </tab>
