@@ -330,208 +330,51 @@ app.controller('NoteCtrl', function($rootScope, $scope, $filter, $routeParams, $
     };
 
 });
-app.controller('ShowingWizardCtrl', function($rootScope, $scope, Restangular, $q, $route) {
-	$rootScope.navName = 'showingwizard';
 
-	$scope.step = 1;
+app.controller('ItemAddCtrl', function($rootScope, $scope, Restangular, $location) {
+    
+    $rootScope.navName = 'additem';
+    $scope.loading = true;
+ 
+    var suppliers = Restangular.all('supplier');
+    suppliers.getList().then(function(res) {
+        $scope.suppliers = res;
+    });
 
-	var films = Restangular.all('films');
-	var showings = Restangular.all('showings');
-	var events = Restangular.all('events');
+    var itemCategories = Restangular.all('itemcategory');
+    itemCategories.getList().then(function(res) {
+        $scope.itemCategories = res;
+    });
 
-	var eventTypes = {};
-	Restangular.one('event-types', STANDARD_EVENT_TYPE).get().then(function(res) {
-		eventTypes[STANDARD_EVENT_TYPE] = res;
-	});
-	Restangular.one('event-types', DOUBLEBILL_EVENT_TYPE).get().then(function(res) {
-		eventTypes[DOUBLEBILL_EVENT_TYPE] = res;
-	});
+    var itemStatuses = Restangular.all('itemstatus');
+    itemStatuses.getList().then(function(res) {
+        $scope.itemStatuses = res;
+    });
 
-	$scope.restart = function() {
-		$route.reload();
-	};
+    var itemOwners = Restangular.all('itemowner');
+    itemOwners.getList().then(function(res) {
+        $scope.itemOwners = res;
+    });
 
-	$scope.stepOne = {
-		searchFilms: function(query) {
-			films.getList({search: query}).then(function(res) {
-				console.log(res);
-				$scope.stepOne.results = res;
-			});
-		},
-		results: [],
-		films: [],
-		addFilm: function(film) {
-			$scope.stepOne.films.push(Restangular.copy(film));
-		},
-		next: function(films) {
-			$scope.stepTwo.start(films);
-		}
-	};
-	$scope.stepTwo = {
-		start: function(films) {
-			if (!films.length || films.length < 1) return;
-			$scope.stepTwo.films = films;
-			$scope.step = 2;
-		},
-		back: function() {
-			$scope.step = 1;
-		},
-		validDate: new RegExp(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/(19|20)\d\d$/),
-		validTime: new RegExp(/^(0[0-9]|1[0-9]|2[0-3])(:[0-5][0-9])$/),
-		valid: function(film) {
-			if (!film) return false;
-			if (!film.time || !$scope.stepTwo.validTime.test(film.time)) return false;
-			return true;
-		},
-		formValid: function() {
-			for (var i = 0; i < $scope.stepTwo.films.length; i++) {
-				if (!$scope.stepTwo.valid($scope.stepTwo.films[i])) return false;
-			}
-			if (!$scope.stepTwo.date || !$scope.stepTwo.validDate.test($scope.stepTwo.date)) return false;
-			return true;
-		},
-		dateValid: function(date) {
-			if (!date || !$scope.stepTwo.validDate.test(date)) return false;
-			return true;
-		},
-		films: [],
-		next: function(films, date) {
-			for (var i = 0; i < films.length; i++) {
-				var film = films[i];
-				film.moment = moment(date + " " + film.time, "DD/MM/YYYY HH:mm");
-				film.datetime = film.moment.toISOString();
-			}
-			$scope.stepThree.start(films);
-		}
-	};
-	$scope.stepThree = {
-		start: function(films) {
-			if (!films || !films.length || films.length < 1) return;
-			$scope.stepThree.films = films;
-			$scope.step = 3;
+    var itemResponsiblePositions = Restangular.all('itemresponsibleposition');
+    itemResponsiblePositions.getList().then(function(res) {
+        $scope.itemResponsiblePositions = res;
+    });
 
-			// ok, now we need to build our showings and films:
-			var that = $scope.stepThree;
-			that.showings = [];
-			that.events = [];
+    var itemHomes = Restangular.all('itemhome');
+    itemHomes.getList().then(function(res) {
+        $scope.itemHomes = res;
+    });
 
-			// showings first:
-			for (var i = 0; i < films.length; i++) {
-				var showing = {
-					film: films[i],
-					start_time: films[i].datetime
-				};
-				that.showings.push(showing);
-			}
+    $scope.loading = false;
 
-			// now create events for each of those showings...
-			var bigEvent = {
-				name: '',
-				showings: [],
-				event_types: [],
-				start_time: null
-			};
-			for (var i = 0; i < that.showings.length; i++) {
-				var event = {
-					name: that.showings[i].film.name,
-					showings: [ that.showings[i] ],
-					event_types: [ eventTypes[STANDARD_EVENT_TYPE] ],
-					start_time: that.showings[i].start_time,
-					ticket_types: eventTypes[STANDARD_EVENT_TYPE].ticket_templates
-				};
-				that.events.push(event);
-				
-				if (bigEvent.name != '') {
-					if (i != that.showings.length - 1)
-						bigEvent.name += ', ';
-					else
-						bigEvent.name += ' and ';
-				}
-				bigEvent.name += that.showings[i].film.name;
-				bigEvent.showings.push(that.showings[i]);
-				var thisMoment = moment(that.showings[i].start_time);
-				if (bigEvent.start_time == null || thisMoment.isBefore(bigEvent.start_time)) {
-					bigEvent.start_time = that.showings[i].start_time;
-				}
-			}
+    $scope.add = function(item) {
+        item.purchase_date = moment(item.purchase_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+        Restangular.all('item').post(item).then(function(response) {
+            console.log("Saved Item");
+            $location.path("/item/"+response.id);
+        });
+    };
 
-			// and one big overarching event, too
-			if (that.showings.length != 1) {
-				if (bigEvent.showings.length == 2) {
-					bigEvent.event_types = [ eventTypes[DOUBLEBILL_EVENT_TYPE] ];
-					bigEvent.ticket_types = eventTypes[DOUBLEBILL_EVENT_TYPE].ticket_templates;
-				}
-				that.events.push(bigEvent);
-			}
-		},
-		back: function() {
-			$scope.step = 2;
-		},
-		next: function() {
-			if ($scope.creating) return;
-			$scope.creating = true;
-			// the server will attempt to help us here
-			// if we generate showings, it will AUTOMATICALLY generate a corresponding "simple" event to match
-			// however, any overarching events must be manually generated
-			var that = $scope.stepThree;
-			var promises = [];
-			for (var i = 0; i < that.showings.length; i++) {
-				var sshowing = that.showings[i];
-				var showing = {
-					'film': sshowing.film.url,
-					'start_time': sshowing.start_time,
-				};
-				var promise = showings.post(showing);
-				promise.then((function(sshowing) {
-					return function(res) {
-						sshowing.created = true;
-						sshowing.created_obj = res;
-						return res;
-					};
-				})(sshowing));
-				promises[i] = promise;
-			}
-
-			$q.all(promises).then(function() {
-				var promises = [];
-				for (var i = 0; i < that.events.length; i++) {
-					var sevent = that.events[i];
-					if (sevent.showings.length == 1) {
-						// only generate "complex" events
-						sevent.created = true;
-						sevent.tickets_created = true;
-						continue;
-					}
-					var event = {
-						name: sevent.name,
-						start_time: sevent.start_time,
-						showings: [],
-						event_types: []
-					};
-					for (var q = 0; q < sevent.showings.length; q++) {
-						event.showings.push(sevent.showings[q].created_obj.url);
-					}
-					for (var q = 0; q < sevent.event_types.length; q++) {
-						event.event_types.push(sevent.event_types[q].url);
-					}
-					var promise = events.post(event);
-					promise.then((function(sevent) {
-						return function(res) {
-							sevent.created = true;
-							sevent.created_obj = res;
-							res.post('reset_ticket_types_by_event_type/', {}).then(function() {
-								sevent.tickets_created = true;
-							});
-						};
-					})(sevent));
-					promises.push(promise);
-				}
-
-				$q.all(promises).then(function() {
-					$scope.step += 1;
-				});
-			});
-		}
-	};
 });
 
