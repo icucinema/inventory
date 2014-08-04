@@ -498,7 +498,7 @@ app.controller('SuppliersCtrl', function($rootScope, $scope, $routeParams, $loca
         Restangular.all('supplier').post(supplier).then(function() {
             updateSupplierData();
             supplier.name = "";
-            supplier.url = "";
+            supplier.supplier_url = "";
         });
     };
 
