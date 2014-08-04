@@ -3,42 +3,42 @@
   <h2>Add New Inventory Item</h2>
   <form ng-submit="add(item)">
     <dl>
-      <dt>Name</dt>
+      <dt>Name <small>The title of this item (keep it short and to the point).</small></dt>
       <dd class="field">
         <input type="text" class="xxwide text input" ng-model="item.name">
       </dd>
-      <dt>Details</dt>
+      <dt>Details <small>Any descriptive information. Should be more detailed than the name.</small></dt>
       <dd class="field">
         <textarea class="xxwide textarea input" ng-model="item.details"></textarea>
-      <dt>Purchase Date</dt>
+        <dt>Purchase Date <small>The date on which this item was originally purchased.</small></dt>
       <dd class="field">
         <input type="text" class="xxwide text input" placeholder="dd/mm/yyyy" ng-model="item.purchase_date" ng-pattern="/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d\d/">
       </dd>
-      <dt>Purchase Price</dt>
+      <dt>Purchase Price <small>The amount in GBP, excluding VAT, that was originally paid for this item.</small></dt>
       <dd class="field">
         <input type="text" class="xxwide text input" ng-model="item.purchase_price">
       </dd>
-      <dt>Original Supplier</dt>
+      <dt>Original Supplier <small>The company this item was originally bought from.</small></dt>
       <dd class="field">
         <select class="xxwide select input" ng-model="item.supplier" ng-options="supplier.url as supplier.name for supplier in suppliers"></select>
       </dd>
-      <dt>Category</dt>
+      <dt>Category <small>The type of equipment that this item is.</small></dt>
       <dd class="field">
         <select class="xxwide select input" ng-model="item.category" ng-options="category.url as category.name for category in itemCategories"></select>
       </dd>
-      <dt>Status</dt>
+      <dt>Status <small>The operational (or not) state of the item currently.</small></dt>
       <dd class="field">
         <select class="xxwide select input" ng-model="item.status" ng-options="status.url as status.name for status in itemStatuses"></select>
       </dd>
-      <dt>Owner</dt>
+      <dt>Owner <small>Who actually owns this item?</small></dt>
       <dd class="field">
         <select class="xxwide select input" ng-model="item.owner" ng-options="owner.url as owner.name for owner in itemOwners"></select>
       </dd>
-      <dt>Responsible Comittee Position</dt>
+      <dt>Responsible Committee Position <small>The member of the Cinema committee responsible for locking after the item.</small> </dt>
       <dd class="field">
         <select class="xxwide select input" ng-model="item.responsible_position" ng-options="position.url as position.name for position in itemResponsiblePositions"></select>
       </dd>
-      <dt>Home</dt>
+      <dt>Home <small>The location in which the item is kept.</small></dt>
       <dd class="field">
         <select class="xxwide select input" ng-model="item.home" ng-options="home.url as home.name for home in itemHomes"></select>
       </dd>
