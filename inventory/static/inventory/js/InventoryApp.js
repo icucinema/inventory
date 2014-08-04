@@ -134,17 +134,17 @@ app.controller('NavCtrl', function($scope) {
 		{
 			'name': 'item',
 			'url': '/item',
-			'text': 'List Items'
+			'text': 'List Inventory Items'
 		},
         {
             'name': 'additem',
             'url': '/item/add',
-            'text': 'Add Item'
+            'text': 'Add Inventory Item'
         },
         {
             'name': 'supplier',
             'url': '/supplier',
-            'text': 'Suppliers'
+            'text': 'Manage Suppliers'
         },
 	];
 
