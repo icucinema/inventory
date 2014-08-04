@@ -46,7 +46,11 @@ app.config(['djurl', '$routeProvider', '$httpProvider', 'RestangularProvider', f
 			templateUrl: djurl.partial_root + 'item.html',
 			controller: 'ItemCtrl'
 		}).
-		otherwise({
+        when('/supplier', {
+            templateUrl: djurl.partial_root + 'suppliers.html',
+            controller: 'SuppliersCtrl'
+        }).
+	    otherwise({
 			redirectTo: '/'
 		});
 	$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -136,6 +140,11 @@ app.controller('NavCtrl', function($scope) {
             'name': 'additem',
             'url': '/item/add',
             'text': 'Add Item'
+        },
+        {
+            'name': 'supplier',
+            'url': '/supplier',
+            'text': 'Suppliers'
         },
 	];
 
@@ -377,4 +386,88 @@ app.controller('ItemAddCtrl', function($rootScope, $scope, Restangular, $locatio
     };
 
 });
+
+app.controller('SuppliersCtrl', function($rootScope, $scope, $routeParams, $location, Restangular) {
+
+    $rootScope.navName = 'supplier';
+
+	var thisPage = parseInt($routeParams.page, 10);
+	if (thisPage != $routeParams.page) {
+		$location.search('page', 1);
+		return;
+	}
+
+	var perPage = parseInt($routeParams.perPage, 10);
+	if (isNaN(perPage) || perPage < 5) {
+		perPage = 10;
+	}
+	var sobj = {
+		page: thisPage,
+		per_page: perPage
+	};
+
+	suppliers = Restangular.all('supplier');
+	var updateSupplierData = function() {
+        suppliers.getList(sobj).then(function(res) {
+            var startRecord = ((thisPage-1) * perPage) + 1;
+            var endRecord = (startRecord + res.length) - 1;
+            $scope.data = {
+                'startAt': startRecord,
+                'endAt': endRecord,
+                'results': res,
+                'next': (res._resultmeta.next ? thisPage+1 : null),
+                'previous': (res._resultmeta.previous ? thisPage-1 : null),
+                'count': res._resultmeta.count
+            }
+        });
+    };
+	updateSupplierData();
+
+	$scope.search = function(q) {
+		sobj.search = q;
+		updateSupplierData();
+	};
+
+	$scope.goTo = function(where) {
+		if (!where) return;
+		$location.search('page', where);
+	};
+
+	$scope.buttonClass = function(pageNum) {
+		if (!pageNum) return 'default';
+		return 'secondary';
+	};
+
+    $scope.addSupplier = function(supplier) {
+        console.log("add called.");
+        Restangular.all('supplier').post(supplier).then(function() {
+            updateSupplierData();
+            supplier.name = "";
+            supplier.url = "";
+        });
+    };
+
+});
+
+app.controller('SupplierCtrl', function($rootScope, $scope, $filter, $routeParams, $location, Restangular, $timeout) {
+
+    $scope.editing = false;
+
+    $scope.editSupplier = function (index) {
+        $scope.edit_data = Restangular.copy($scope.data.results[index]);
+        $scope.editing = true;
+    };
+
+    $scope.cancelEditSupplier = function() {
+        $scope.editing = false;
+    };
+
+    $scope.saveEditSupplier = function(index) {
+        $scope.data.results[index] = $scope.edit_data;
+        $scope.data.results[index].put();
+        $scope.editing = false;
+    };
+
+});
+
 

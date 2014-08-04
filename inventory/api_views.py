@@ -75,6 +75,8 @@ class ItemHomeViewSet(viewsets.ModelViewSet):
 class SupplierViewSet(viewsets.ModelViewSet):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ('name',)
 
 class ItemNoteViewSet(viewsets.ModelViewSet):
     queryset = ItemNote.objects.all()

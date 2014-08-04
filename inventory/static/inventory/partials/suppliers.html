@@ -1,0 +1,62 @@
+<div class="field search-field">
+  <input type="search" class="search-input xxwide text input" ng-model="searchQuery" placeholder="Search" ng-change="search(searchQuery)">
+</div>
+
+<h2>Suppliers</h1>
+
+Supplier <strong>{{ data.startAt }}</strong>-<strong>{{ data.endAt }}</strong> of <strong>{{ data.count }}</strong>
+<div style="height: 36px; margin-bottom: 20px">
+  <div class="medium btn icon-left entypo icon-arrow-left" ng-class="buttonClass(data.previous)">
+    <a href ng-click="goTo(data.previous)">Prev</a>
+  </div>
+  <div class="medium btn icon-right entypo icon-arrow-right" style="float: right;" ng-class="buttonClass(data.next)">
+    <a href ng-click="goTo(data.next)">Next</a>
+  </div>
+</div>
+
+<table class="striped">
+  <thead>
+    <tr>
+      <th>Supplier</th>
+      <th>Web Site</th>
+      <th>Edit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-controller="SupplierCtrl" ng-repeat="supplier in data.results track by supplier.id">
+      <td>
+        <span ng-hide="editing">{{ supplier.name }}</span>
+        <input type="text" class="wide text input" ng-model="edit_data.name" ng-show="editing"></textarea>
+      </td>
+      <td>
+        <span ng-hide="editing"><a href="{{ supplier.supplier_url }}" target="_blank">Web Site</a></span>
+        <input type="text" class="wide text input" ng-model="edit_data.supplier_url" ng-show="editing"></textarea>
+      </td>
+      <td>
+        <div class="btn primary norm" ng-click="editSupplier($index)" ng-hide="editing"><a href>Edit</a></div>
+        <ul ng-show="editing">
+          <li><div class="btn primary norm" ng-click="saveEditSupplier($index)"><a href>Save</a></div></li>
+          <li><div class="btn danger norm" ng-click="cancelEditSupplier()"><a href>Cancel</a></div></li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Add Note</h3>
+<form ng-submit="addSupplier(newSupplier)">
+  <ul>
+    <li class="field">
+      <label class="inline" for="manual-name">Text</label>
+      <input type="text" class="xxwide textarea input" id="manual-name" ng-model="newSupplier.name"></textarea>
+    </li>
+    <li class="field">
+      <label class="inline" for="manual-url">Web Site</label>
+      <input type="text" class="xxwide textarea input" id="manual-url" ng-model="newSupplier.supplier_url"></textarea>
+    </li>
+    <li>
+      <div class="norm primary btn">
+        <input type="submit" value="Add"></div>
+    </li>
+  </ul>
+</form>
