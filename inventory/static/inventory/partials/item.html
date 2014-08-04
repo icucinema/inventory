@@ -20,7 +20,7 @@
             <input type="text" class="xxwide text input" placeholder="dd/mm/yyyy" ng-model="edit_data.purchase_date" ng-pattern="/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d\d/">
           </dd>
         <dt>Purchase Price</dt>
-          <dd ng-hide="editing">{{ data.purchase_price | currency : "&pound;" }}</dd>
+          <dd ng-hide="editing">{{ data.purchase_price | nullCurrency : "&pound;" }}</dd>
           <dd ng-show="editing" class="field">
             <input type="text" class="xxwide text input" ng-model="edit_data.purchase_price">
           </dd>

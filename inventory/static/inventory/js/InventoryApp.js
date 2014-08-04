@@ -122,6 +122,16 @@ app.directive('tab', function() {
 	}
 });
 
+
+app.filter('nullCurrency', ['$filter', function ($filter) {
+    return function (amount, currencySymbol) {
+        if (amount === '' || amount === null)
+            return '';
+        else
+            return $filter("currency")(amount, currencySymbol);
+    };
+}]);
+
 app.controller('AppCtrl', function($scope) {
 	$scope.hBack = function() { 
 		window.history.go(-1);
