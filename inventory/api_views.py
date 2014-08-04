@@ -1,5 +1,6 @@
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, views
 from rest_framework.decorators import action, link
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
 from inventory.api_serializers import *
@@ -92,6 +93,28 @@ class ItemNoteViewSet(viewsets.ModelViewSet):
 class ItemPictureViewSet(viewsets.ModelViewSet):
     queryset = ItemPicture.objects.all()
     serializer_class = ItemPictureSerializer
+    parser_classes = (FormParser, MultiPartParser,)
+
+    def put(self, request):
+        file_obj = request.FILES['file']
+        print request.DATA['item']
+        lowerName = file_obj.name.lower()
+        extension = None
+
+        if lowerName[-3:] == "png":
+            extension = "png"
+        elif lowerName[-3:] == "jpg":
+            extension = "jpg"
+        elif lowerName[-4:] == "jpeg":
+            extension = "jpg"
+
+        if extension is None:
+            return Response(status=400)
+
+        instance = ItemPicture(item = Item.objects.get(pk=request.DATA['item']), image = request.FILES['file'])
+        instance.save()
+
+        return Response(status=204)
 
 class QuoteViewSet(viewsets.ModelViewSet):
     queryset = Quote.objects.all()

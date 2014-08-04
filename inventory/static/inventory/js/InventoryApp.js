@@ -2,7 +2,8 @@ var app = angular.module('InventoryApp', [
 	'ngRoute',
 	'ngAnimate',
 	'ngAnimate-animate.css',
-	'restangular'
+	'restangular',
+    'angularFileUpload',
 ]);
 
 app.constant('djurl', __djurls);
@@ -214,11 +215,13 @@ app.controller('ItemsCtrl', function($rootScope, $scope, $routeParams, $location
 		return '#/item/' + item.id;
 	};
 });
-app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $location, Restangular, $timeout) {
+app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $location, Restangular, $timeout, $upload, djurl) {
 	$rootScope.navName = 'item';
 
 	$scope.loading = true;
     $scope.editing = false;
+
+    $scope.media_root = djurl.media_root;
 
 	var itemId = parseInt($routeParams.id, 10);
 
@@ -227,19 +230,24 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
 		$scope.loading = false;
 		$scope.data = res;
 	});
-    var updateNotesData = function() {
+ 
+   var updateNotesData = function() {
         item.getList('notes').then(function(res) {
             $scope.notes = res;
         });
     };
     updateNotesData();
-    item.getList('pictures').then(function(res) {
-		$scope.pictures = res;
-	});
+ 
+   var updatePicturesData = function() {
+        item.getList('pictures').then(function(res) {
+            $scope.pictures = res;
+        });
+    };
+    updatePicturesData();
+ 
     item.getList('quotes').then(function(res) {
 		$scope.quotes = res;
 	});
-
 
     var suppliers = Restangular.all('supplier');
     suppliers.getList().then(function(res) {
@@ -328,6 +336,19 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
         });
     };
 
+    $scope.onFileSelect = function($files) {
+        for (var i = 0; i < $files.length; i++) {
+            var file = $files[i];
+            $scope.upload = $upload.upload({
+                url: '/api/itempicture/',
+                method: 'PUT',
+                data: {item: $scope.data.id},
+                file: file,
+            }).success(function(data, status, headers, config) {
+                updatePicturesData();
+            });
+        }
+    };
 });
 
 app.controller('NoteCtrl', function($rootScope, $scope, $filter, $routeParams, $location, Restangular, $timeout) {

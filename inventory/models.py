@@ -1,4 +1,8 @@
 from django.db import models
+from django.conf import settings
+
+import os
+import uuid
 
 # Various item attributes
 
@@ -101,7 +105,18 @@ class ItemNote(models.Model):
         pass
 
 class ItemPicture(models.Model):
-    image = models.ImageField(upload_to="inventory_image")    
+    def picture_file_name(self, filename):
+        lowerName = filename.lower()
+        if lowerName[-3:] == "png":
+            extension = "png"
+        elif lowerName[-3:] == "jpg":
+            extension = "jpg"
+        elif lowerName[-4:] == "jpeg":
+            extension = "jpg"
+
+        return "inventory"+os.sep+"item_pictures"+os.sep+str(uuid.uuid4())+"."+extension
+
+    image = models.ImageField(upload_to=picture_file_name)
     item = models.ForeignKey(Item, related_name='pictures')
 
     def __unicode__(self):

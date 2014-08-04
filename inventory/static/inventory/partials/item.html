@@ -106,7 +106,18 @@
       </form>
     </tab>
 		<tab tab-title="Pictures ({{ pictures.length }})">
-      <h3>This feature is not yet implemented.</h3>
+      <h3>Pictures</h3>
+      <div ng-repeat="picture in pictures">
+        <img src="{{ media_root }}{{ picture.image }}" width="200" />
+      </div>
+
+      <h3>Upload New Picture</h3>
+      <input type="file" ng-file-select="onFileSelect($files)" multiple accept="image/*">
+      <div class="button" ng-file-select="onFileSelect($files)" data-multiple="true"></div>
+      <div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class-name-or-function"
+           ng-show="dropSupported">drop files here</div>
+      <div ng-file-drop-available="dropSupported=true" 
+           ng-show="!dropSupported"></div>
 	  </tab>
 		<tab tab-title="Quotes ({{ quotes.length }})">
       <h3>This feature is not yet implemented.</h3>
