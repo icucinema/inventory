@@ -133,7 +133,7 @@ class Migration(SchemaMigration):
 
     models = {
         u'inventory.item': {
-            'Meta': {'object_name': 'Item'},
+            'Meta': {'ordering': "['name']", 'object_name': 'Item'},
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemCategory']"}),
             'details': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'home': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemHome']"}),
@@ -147,25 +147,25 @@ class Migration(SchemaMigration):
             'supplier': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.Supplier']"})
         },
         u'inventory.itemcategory': {
-            'Meta': {'object_name': 'ItemCategory'},
+            'Meta': {'ordering': "['name']", 'object_name': 'ItemCategory'},
             'description': ('django.db.models.fields.CharField', [], {'max_length': '254'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
         },
         u'inventory.itemhome': {
-            'Meta': {'object_name': 'ItemHome'},
+            'Meta': {'ordering': "['name']", 'object_name': 'ItemHome'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
         },
         u'inventory.itemnote': {
-            'Meta': {'object_name': 'ItemNote'},
+            'Meta': {'ordering': "['-date_added']", 'object_name': 'ItemNote'},
             'date_added': ('django.db.models.fields.DateField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'item': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'notes'", 'to': u"orm['inventory.Item']"}),
             'text': ('django.db.models.fields.TextField', [], {})
         },
         u'inventory.itemowner': {
-            'Meta': {'object_name': 'ItemOwner'},
+            'Meta': {'ordering': "['name']", 'object_name': 'ItemOwner'},
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '254'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
@@ -177,17 +177,17 @@ class Migration(SchemaMigration):
             'item': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'pictures'", 'to': u"orm['inventory.Item']"})
         },
         u'inventory.itemresponsibleposition': {
-            'Meta': {'object_name': 'ItemResponsiblePosition'},
+            'Meta': {'ordering': "['name']", 'object_name': 'ItemResponsiblePosition'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
         },
         u'inventory.itemstatus': {
-            'Meta': {'object_name': 'ItemStatus'},
+            'Meta': {'ordering': "['name']", 'object_name': 'ItemStatus'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
         },
         u'inventory.quote': {
-            'Meta': {'object_name': 'Quote'},
+            'Meta': {'ordering': "['-date']", 'object_name': 'Quote'},
             'amount': ('django.db.models.fields.DecimalField', [], {'max_digits': '14', 'decimal_places': '2'}),
             'date': ('django.db.models.fields.DateField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -197,7 +197,7 @@ class Migration(SchemaMigration):
             'supplier': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.Supplier']"})
         },
         u'inventory.supplier': {
-            'Meta': {'object_name': 'Supplier'},
+            'Meta': {'ordering': "['name']", 'object_name': 'Supplier'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'supplier_url': ('django.db.models.fields.URLField', [], {'max_length': '1000', 'blank': 'True'})

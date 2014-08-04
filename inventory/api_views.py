@@ -3,9 +3,33 @@ from rest_framework.decorators import action, link
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
-from inventory.api_serializers import *
+from django.db import transaction
 
+from inventory.api_serializers import *
 from inventory.models import *
+
+import reversion
+
+class ReversionModelViewSet(viewsets.ModelViewSet):
+    def create(self, request):
+        with transaction.atomic(), reversion.create_revision():
+            reversion.set_user(request.user)
+            return super(viewsets.ModelViewSet, self).create(request)
+
+    def update(self, request, pk=None):
+        with transaction.atomic(), reversion.create_revision():
+            reversion.set_user(request.user)
+            return super(viewsets.ModelViewSet, self).update(request, pk)
+ 
+    def partial_update(self, request, pk=None):
+        with transaction.atomic(), reversion.create_revision():
+            reversion.set_user(request.user)
+            return super(viewsets.ModelViewSet, self).partial_update(request, pk)
+
+    def destroy(self, request, pk=None):
+        with transaction.atomic(), reversion.create_revision():
+            reversion.set_user(request.user)
+            return super(viewsets.ModelViewSet, self).destroy(request, pk)
 
 def serialize_queryset(self, serializer_class, queryset):
     self.serializer_class = serializer_class 
@@ -20,7 +44,7 @@ def serialize_queryset(self, serializer_class, queryset):
 
     return Response(serializer.data)
 
-class ItemViewSet(viewsets.ModelViewSet):
+class ItemViewSet(ReversionModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
@@ -46,77 +70,66 @@ class ItemViewSet(viewsets.ModelViewSet):
         item = self.get_object()
         return serialize_queryset(self, QuoteSerializer, item.quotes.all())
 
-    @action(methods=['PUT'])
-    def update_remote(self, request, pk=None):
-        item = self.get_object()
-        item.update_remote()
-        item.save()
-        return Response(ItemSerializer(item).data)
-
-class ItemCategoryViewSet(viewsets.ModelViewSet):
+class ItemCategoryViewSet(ReversionModelViewSet):
     queryset = ItemCategory.objects.all()
     serializer_class = ItemCategorySerializer
 
-class ItemStatusViewSet(viewsets.ModelViewSet):
+class ItemStatusViewSet(ReversionModelViewSet):
     queryset = ItemStatus.objects.all()
     serializer_class = ItemStatusSerializer
 
-class ItemOwnerViewSet(viewsets.ModelViewSet):
+class ItemOwnerViewSet(ReversionModelViewSet):
     queryset = ItemOwner.objects.all()
     serializer_class = ItemOwnerSerializer
 
-class ItemResponsiblePositionViewSet(viewsets.ModelViewSet):
+class ItemResponsiblePositionViewSet(ReversionModelViewSet):
     queryset = ItemResponsiblePosition.objects.all()
     serializer_class = ItemResponsiblePositionSerializer
 
-class ItemHomeViewSet(viewsets.ModelViewSet):
+class ItemHomeViewSet(ReversionModelViewSet):
     queryset = ItemHome.objects.all()
     serializer_class = ItemHomeSerializer
 
-class SupplierViewSet(viewsets.ModelViewSet):
+class SupplierViewSet(ReversionModelViewSet):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('name',)
 
-class ItemNoteViewSet(viewsets.ModelViewSet):
+class ItemNoteViewSet(ReversionModelViewSet):
     queryset = ItemNote.objects.all()
     serializer_class = ItemNoteSerializer
 
-    @action(methods=["put"])
-    def update_remote(self, request, pk=None):
-        note = self.get_object()
-        note.update_remote()
-        note.save()
-        return Response(ItemNoteSerializer(note).data)
-
-class ItemPictureViewSet(viewsets.ModelViewSet):
+class ItemPictureViewSet(ReversionModelViewSet):
     queryset = ItemPicture.objects.all()
     serializer_class = ItemPictureSerializer
     parser_classes = (FormParser, MultiPartParser,)
 
     def put(self, request):
-        file_obj = request.FILES['file']
-        print request.DATA['item']
-        lowerName = file_obj.name.lower()
-        extension = None
+        with transaction.atomic(), reversion.create_revision():
+            reversion.set_user(request.user)
 
-        if lowerName[-3:] == "png":
-            extension = "png"
-        elif lowerName[-3:] == "jpg":
-            extension = "jpg"
-        elif lowerName[-4:] == "jpeg":
-            extension = "jpg"
+            file_obj = request.FILES['file']
+            print request.DATA['item']
+            lowerName = file_obj.name.lower()
+            extension = None
 
-        if extension is None:
-            return Response(status=400)
+            if lowerName[-3:] == "png":
+                extension = "png"
+            elif lowerName[-3:] == "jpg":
+                extension = "jpg"
+            elif lowerName[-4:] == "jpeg":
+                extension = "jpg"
 
-        instance = ItemPicture(item = Item.objects.get(pk=request.DATA['item']), image = request.FILES['file'])
-        instance.save()
+            if extension is None:
+                return Response(status=400)
 
-        return Response(status=204)
+            instance = ItemPicture(item = Item.objects.get(pk=request.DATA['item']), image = request.FILES['file'])
+            instance.save()
 
-class QuoteViewSet(viewsets.ModelViewSet):
+            return Response(status=204)
+
+class QuoteViewSet(ReversionModelViewSet):
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 

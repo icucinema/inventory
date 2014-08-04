@@ -23,16 +23,42 @@ class ItemAdmin(reversion.VersionAdmin):
             QuoteInline,
             ]
 
+class ItemCategoryAdmin(reversion.VersionAdmin):
+    pass
+
+class ItemStatusAdmin(reversion.VersionAdmin):
+    pass
+
+class ItemOwnerAdmin(reversion.VersionAdmin):
+    pass
+
+class ItemResponsiblePositionAdmin(reversion.VersionAdmin):
+    pass
+
+class ItemHomeAdmin(reversion.VersionAdmin):
+    pass
+
+class SupplierAdmin(reversion.VersionAdmin):
+    pass
+
+class ItemNoteAdmin(reversion.VersionAdmin):
+    pass
+
+class ItemPictureAdmin(reversion.VersionAdmin):
+    pass
+
+class QuoteAdmin(reversion.VersionAdmin):
+    pass
+
+
 admin.site.register(Item, ItemAdmin)
-
-admin.site.register(ItemCategory)
-admin.site.register(ItemStatus)
-admin.site.register(ItemOwner)
-admin.site.register(ItemResponsiblePosition)
-admin.site.register(ItemHome)
-admin.site.register(Supplier)
-admin.site.register(ItemNote)
-admin.site.register(ItemPicture)
-admin.site.register(Quote)
-
+admin.site.register(ItemCategory, ItemCategoryAdmin)
+admin.site.register(ItemStatus, ItemStatusAdmin)
+admin.site.register(ItemOwner, ItemOwnerAdmin)
+admin.site.register(ItemResponsiblePosition, ItemResponsiblePositionAdmin)
+admin.site.register(ItemHome, ItemHomeAdmin)
+admin.site.register(Supplier, SupplierAdmin)
+admin.site.register(ItemNote, ItemNoteAdmin)
+admin.site.register(ItemPicture, ItemPictureAdmin)
+admin.site.register(Quote, QuoteAdmin)
 

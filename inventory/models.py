@@ -1,5 +1,7 @@
-from django.db import models
+from django.db import models, transaction
 from django.conf import settings
+
+import reversion
 
 import os
 import uuid
@@ -85,9 +87,6 @@ class Item(models.Model):
     def __unicode__(self):
         return u'['+str(self.id)+u'] '+self.name
 
-    def update_remote(self):
-        pass
-
 # Things that can be attached to an item
 
 class ItemNote(models.Model):
@@ -100,9 +99,6 @@ class ItemNote(models.Model):
 
     def __unicode__(self):
         return u"Note ["+str(self.id)+u"] on Item ["+str(self.item.id)+u"]"
-
-    def update_remote(self):
-        pass
 
 class ItemPicture(models.Model):
     def picture_file_name(self, filename):
@@ -137,5 +133,4 @@ class Quote(models.Model):
 
     def __unicode__(self):
         return u"Quote ["+str(self.id)+u"] on Item ["+str(self.item.id)+u"]"
-
 
