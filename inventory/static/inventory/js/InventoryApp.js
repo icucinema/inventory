@@ -294,6 +294,9 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
     $scope.saveEdit = function() {
         $scope.data = $scope.edit_data;
         $scope.data.purchase_date = moment($scope.data.purchase_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+        if ($scope.data.purchase_date == "Invalid date") {
+            $scope.data.purchase_date = "";
+        }
         $scope.data.put();
         
         $scope.data.supplier = retrieveObject($scope.suppliers, $scope.data.supplier);
@@ -379,6 +382,10 @@ app.controller('ItemAddCtrl', function($rootScope, $scope, Restangular, $locatio
 
     $scope.add = function(item) {
         item.purchase_date = moment(item.purchase_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+        if (item.purchase_date == "Invalid date") {
+            console.log("Invalid Date Entered.");
+            item.purchase_date = "";
+        }
         Restangular.all('item').post(item).then(function(response) {
             console.log("Saved Item");
             $location.path("/item/"+response.id);
