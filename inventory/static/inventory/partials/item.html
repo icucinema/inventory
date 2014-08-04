@@ -105,44 +105,13 @@
       </form>
     </tab>
 		<tab tab-title="Pictures ({{ pictures.length }})">
-			<table class="striped">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Punter</th>
-						<th>Ticket type</th>
-						<th>Status</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="ticket in tickets track by ticket.id" class="dn-bounce">
-						<td><a href="#/tickets/{{ ticket.id }}">{{ ticket.id }}</a></td>
-						<td><a ng-show="ticket.punter" href="{{ punterUrl(ticket.punter) }}">{{ ticket.punter.name }}</a><span ng-show="!ticket.punter">Guest</span></td>
-						<td>{{ ticket.ticket_type.name }}</td>
-						<td>{{ ticket.status }}</td>
-					</tr>
-				</tbody>
-			</table>
-		</tab>
+      <h3>This feature is not yet implemented.</h3>
+	  </tab>
 		<tab tab-title="Quotes ({{ quotes.length }})">
-			<table class="striped">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Punter</th>
-						<th>Ticket type</th>
-						<th>Status</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="ticket in tickets track by ticket.id" class="dn-bounce">
-						<td><a href="#/tickets/{{ ticket.id }}">{{ ticket.id }}</a></td>
-						<td><a ng-show="ticket.punter" href="{{ punterUrl(ticket.punter) }}">{{ ticket.punter.name }}</a><span ng-show="!ticket.punter">Guest</span></td>
-						<td>{{ ticket.ticket_type.name }}</td>
-						<td>{{ ticket.status }}</td>
-					</tr>
-				</tbody>
-			</table>
+      <h3>This feature is not yet implemented.</h3>
 		</tab>
+		<tab tab-title="History ({{ history.length }})">
+      <h3>This feature is not yet implemented.</h3>
+	  </tab>
 	</tabs>
 </div>
