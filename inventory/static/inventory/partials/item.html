@@ -28,6 +28,11 @@
           <dd ng-show="editing" class="field">
             <select class="xxwide select input" ng-model="edit_data.responsible_position" ng-options="position.url as position.name for position in itemResponsiblePositions"></select>
           </dd>
+        <dt>Wiki Page</dt>
+          <dd ng-hide="editing"><a href="https://wiki.wide.icucinema.co.uk/Assets/{{ data.wiki }}">Wiki Page</a></dd>
+          <dd ng-show="editing" class="field">
+            <input type="text" class="xxwide text input" ng-model="edit_data.wiki">
+          </dd>
   		</dl>
       <h3>Actions</h3>
       <ul ng-hide="editing">

@@ -22,6 +22,10 @@
       <dd class="field">
         <select class="xxwide select input" ng-model="item.responsible_position" ng-options="position.url as position.name for position in itemResponsiblePositions"></select>
       </dd>
+     <dt>Wiki Page <small>The name of the Wiki page about this item (inside the Assets/* namespace), e.g. "Kinoton Projector".</small></dt>
+      <dd class="field">
+        <input type="text" class="xxwide text input" ng-model="item.wiki">
+      </dd>
     </dl>
     <ul>
       <li>

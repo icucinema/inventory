@@ -60,6 +60,7 @@ class ItemHome(models.Model):
 class Supplier(models.Model):
     name = models.CharField(max_length=200)
     supplier_url = models.URLField(max_length=1000, blank=True)
+    wiki = models.CharField(blank=True, max_length=254)
 
     class Meta:
         ordering = ['name']
@@ -75,6 +76,7 @@ class Item(models.Model):
     category = models.ForeignKey(ItemCategory)
     owner = models.ForeignKey(ItemOwner)
     responsible_position = models.ForeignKey(ItemResponsiblePosition)
+    wiki = models.CharField(blank=True, max_length=254)
   
     class Meta:
         ordering = ['name']

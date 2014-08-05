@@ -30,7 +30,7 @@ class ItemHomeSerializer(HyperlinkedModelSerializer):
 class SupplierSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Supplier
-        fields = ('url', 'id', 'name', 'supplier_url')
+        fields = ('url', 'id', 'name', 'supplier_url', 'wiki')
 
 class ItemNoteSerializer(HyperlinkedModelSerializer):
     class Meta:
@@ -78,12 +78,12 @@ class ItemSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Item
         fields = ('url', 'id', 'name', 'details', 'category', 'owner', 'responsible_position',
-                  'notes', 'pictures', 'quotes', 'instances')
+                  'notes', 'pictures', 'quotes', 'instances', 'wiki')
 
 class FlatItemSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Item
         fields = ('url', 'id', 'name', 'details', 'category', 'owner', 'responsible_position',
-                  'notes', 'pictures', 'quotes', 'instances')
+                  'notes', 'pictures', 'quotes', 'instances', 'wiki')
 
 

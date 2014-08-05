@@ -50,6 +50,7 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('supplier_url', self.gf('django.db.models.fields.URLField')(max_length=1000, blank=True)),
+            ('wiki', self.gf('django.db.models.fields.CharField')(max_length=254, blank=True)),
         ))
         db.send_create_signal(u'inventory', ['Supplier'])
 
@@ -61,6 +62,7 @@ class Migration(SchemaMigration):
             ('category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemCategory'])),
             ('owner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemOwner'])),
             ('responsible_position', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemResponsiblePosition'])),
+            ('wiki', self.gf('django.db.models.fields.CharField')(max_length=254, blank=True)),
         ))
         db.send_create_signal(u'inventory', ['Item'])
 
@@ -161,7 +163,8 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '254'}),
             'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemOwner']"}),
-            'responsible_position': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemResponsiblePosition']"})
+            'responsible_position': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemResponsiblePosition']"}),
+            'wiki': ('django.db.models.fields.CharField', [], {'max_length': '254', 'blank': 'True'})
         },
         u'inventory.itemcategory': {
             'Meta': {'ordering': "['name']", 'object_name': 'ItemCategory'},
@@ -217,7 +220,8 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['name']", 'object_name': 'Supplier'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'supplier_url': ('django.db.models.fields.URLField', [], {'max_length': '1000', 'blank': 'True'})
+            'supplier_url': ('django.db.models.fields.URLField', [], {'max_length': '1000', 'blank': 'True'}),
+            'wiki': ('django.db.models.fields.CharField', [], {'max_length': '254', 'blank': 'True'})
         }
     }
 

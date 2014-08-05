@@ -19,6 +19,7 @@ Supplier <strong>{{ data.startAt }}</strong>-<strong>{{ data.endAt }}</strong> o
     <tr>
       <th>Supplier</th>
       <th>Web Site</th>
+      <th>Wiki Page</th>
       <th>Edit</th>
     </tr>
   </thead>
@@ -31,6 +32,10 @@ Supplier <strong>{{ data.startAt }}</strong>-<strong>{{ data.endAt }}</strong> o
       <td>
         <span ng-hide="editing"><a href="{{ supplier.supplier_url }}" target="_blank">Web Site</a></span>
         <input type="text" class="wide text input" ng-model="edit_data.supplier_url" ng-show="editing"></textarea>
+      </td>
+      <td>
+        <span ng-hide="editing"><a href="https://wiki.wide.icucinema.co.uk/Suppliers/{{ supplier.wiki }}" target="_blank">Wiki Page</a></span>
+        <input type="text" class="wide text input" ng-model="edit_data.wiki" ng-show="editing"></textarea>
       </td>
       <td>
         <div class="btn primary norm" ng-click="editSupplier($index)" ng-hide="editing"><a href>Edit</a></div>
@@ -47,12 +52,16 @@ Supplier <strong>{{ data.startAt }}</strong>-<strong>{{ data.endAt }}</strong> o
 <form ng-submit="addSupplier(newSupplier)">
   <ul>
     <li class="field">
-      <label class="inline" for="manual-name">Name</label>
-      <input type="text" class="xxwide textarea input" id="manual-name" ng-model="newSupplier.name"></textarea>
+      <label class="inline" for="manual-name">Name <small>The Supplier's Trading Name</small></label>
+      <input type="text" class="xxwide textarea input" id="manual-name" ng-model="newSupplier.name">
     </li>
     <li class="field">
-      <label class="inline" for="manual-url">Web Site</label>
-      <input type="text" class="xxwide textarea input" id="manual-url" ng-model="newSupplier.supplier_url"></textarea>
+      <label class="inline" for="manual-url">Web Site <small>The Web Site of this supplier, including http://</small></label>
+      <input type="text" class="xxwide textarea input" id="manual-url" ng-model="newSupplier.supplier_url">
+    </li>
+    <li class="field">
+      <label class="inline" for="manual-wiki">Wiki Page <small>The name of the Wiki page about this supplier (inside the Suppliers/* namespace), e.g. "Future Projections".</small></label>
+      <input type="text" class="xxwide text input" id="manual-wiki" ng-model="newSupplier.wiki">
     </li>
     <li>
       <div class="norm primary btn">
