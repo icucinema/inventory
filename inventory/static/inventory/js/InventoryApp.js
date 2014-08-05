@@ -392,7 +392,7 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
         for (var i = 0; i < $files.length; i++) {
             var file = $files[i];
             $scope.upload = $upload.upload({
-                url: '/api/itempicture/',
+                url: djurl.api_root+'itempicture/',
                 method: 'PUT',
                 data: {item: $scope.data.id},
                 file: file,
