@@ -233,7 +233,7 @@ app.controller('ItemsCtrl', function($rootScope, $scope, $routeParams, $location
 		return '#/item/' + item.id;
 	};
 });
-app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $location, Restangular, $timeout, $upload, djurl) {
+app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $location, Restangular, $timeout, $upload, djurl, $anchorScroll) {
 	$rootScope.navName = 'item';
 
 	$scope.loading = true;
@@ -269,6 +269,13 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
         });
     };
     updateQuotesData();
+ 
+    var updateInstancesData = function() {
+        item.getList('instances').then(function(res) {
+            $scope.instances = res;
+        });
+    };
+    updateInstancesData();
 
     var suppliers = Restangular.all('supplier');
     suppliers.getList().then(function(res) {
@@ -302,13 +309,9 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
 
     $scope.edit = function() {
         $scope.edit_data = Restangular.copy($scope.data);
-        $scope.edit_data.purchase_date = $filter('date')($scope.edit_data.purchase_date, "dd/MM/yyyy");
-        $scope.edit_data.supplier = $scope.edit_data.supplier.url;
         $scope.edit_data.category = $scope.edit_data.category.url;
-        $scope.edit_data.status = $scope.edit_data.status.url;
         $scope.edit_data.owner = $scope.edit_data.owner.url;
         $scope.edit_data.responsible_position = $scope.edit_data.responsible_position.url;
-        $scope.edit_data.home = $scope.edit_data.home.url;
         $scope.editing = true;
     };
 
@@ -322,25 +325,31 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
 
     $scope.saveEdit = function() {
         $scope.data = $scope.edit_data;
-        $scope.data.purchase_date = moment($scope.data.purchase_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-        if ($scope.data.purchase_date == "Invalid date") {
-            $scope.data.purchase_date = "";
-        }
         $scope.data.put();
         
-        $scope.data.supplier = retrieveObject($scope.suppliers, $scope.data.supplier);
         $scope.data.category = retrieveObject($scope.itemCategories, $scope.data.category);
-        $scope.data.status = retrieveObject($scope.itemStatuses, $scope.data.status);
         $scope.data.owner = retrieveObject($scope.itemOwners, $scope.data.owner);
         $scope.data.responsible_position = retrieveObject($scope.itemResponsiblePositions, $scope.data.responsible_position);
-        $scope.data.home = retrieveObject($scope.itemHomes, $scope.data.home);
 
         $scope.editing = false;
 
     };
 
+    $scope.duplicateInstance = function(index) {
+        $scope.newInstance = Restangular.copy($scope.instances[index]);
+
+        $scope.newInstance.purchase_date = $filter('date')($scope.newInstance.purchase_date, "dd/MM/yyyy");
+        $scope.newInstance.supplier = $scope.newInstance.supplier.url;
+        $scope.newInstance.status = $scope.newInstance.status.url;
+        $scope.newInstance.home = $scope.newInstance.home.url;
+
+        var oldHash = $location.hash();
+        $location.hash('newInstanceTr');
+        $anchorScroll();
+        $location.hash(oldHash);
+    };
+
     $scope.addNote = function(note) {
-        console.log("add called.");
         note.item = $scope.data.url;
         note.date_added = moment().format("YYYY-MM-DD");
         Restangular.all('itemnote').post(note).then(function() {
@@ -362,6 +371,23 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
         });
     };
 
+    $scope.addInstance = function(instance) {
+        instance.item = $scope.data.url;
+        instance.purchase_date = moment(instance.purchase_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+        if (instance.purchase_date == "Invalid date") {
+            instance.purchase_date = "";
+        }
+        Restangular.all('instance').post(instance).then(function() {
+            updateInstancesData();
+            instance.status = "";
+            instance.home = "";
+            instance.purchsae_date = "";
+            instance.purchase_price = "";
+            instance.supplier = "";
+            instance.comment = "";
+        });
+    };
+
     $scope.onFileSelect = function($files) {
         for (var i = 0; i < $files.length; i++) {
             var file = $files[i];
@@ -375,6 +401,44 @@ app.controller('ItemCtrl', function($rootScope, $scope, $filter, $routeParams, $
             });
         }
     };
+});
+
+app.controller('InstanceCtrl', function($rootScope, $scope, $filter, $routeParams, $location, Restangular, $timeout) {
+    
+    $scope.editing = false;
+
+    $scope.editInstance = function (index) {
+        $scope.edit_data = Restangular.copy($scope.instances[index]);
+
+        $scope.edit_data.purchase_date = $filter('date')($scope.edit_data.purchase_date, "dd/MM/yyyy");
+        $scope.edit_data.supplier = $scope.edit_data.supplier.url;
+        $scope.edit_data.home = $scope.edit_data.home.url;
+        $scope.edit_data.status = $scope.edit_data.status.url;
+
+        $scope.editing = true;
+    }
+
+    $scope.cancelEditInstance = function(index) {
+        $scope.editing = false;
+    }
+
+    $scope.saveEditInstance = function(index) {
+        $scope.instances[index] = $scope.edit_data;
+
+        $scope.instances[index].purchase_date = moment($scope.instances[index].purchase_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+        if ($scope.instances[index].purchase_date == "Invalid date") {
+            $scope.instanecs[index].purchase_date = "";
+        }
+ 
+        $scope.instances[index].put();
+
+        $scope.instances[index].supplier = retrieveObject($scope.suppliers, $scope.edit_data.supplier);
+        $scope.instances[index].status = retrieveObject($scope.itemStatuses, $scope.edit_data.status);
+        $scope.instances[index].home = retrieveObject($scope.itemHomes, $scope.edit_data.home);
+        
+        $scope.editing = false;
+    };
+
 });
 
 app.controller('NoteCtrl', function($rootScope, $scope, $filter, $routeParams, $location, Restangular, $timeout) {
@@ -471,24 +535,15 @@ app.controller('ItemAddCtrl', function($rootScope, $scope, Restangular, $locatio
             $scope.loading = false;
             $scope.item = res;
 
-            $scope.item.purchase_date = $filter('date')($scope.item.purchase_date, "dd/MM/yyyy");
-            $scope.item.supplier = $scope.item.supplier.url;
             $scope.item.category = $scope.item.category.url;
-            $scope.item.status = $scope.item.status.url;
             $scope.item.owner = $scope.item.owner.url;
             $scope.item.responsible_position = $scope.item.responsible_position.url;
-            $scope.item.home = $scope.item.home.url;
         });
     }
 
     $scope.loading = false;
 
     $scope.add = function(item) {
-        item.purchase_date = moment(item.purchase_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-        if (item.purchase_date == "Invalid date") {
-            console.log("Invalid Date Entered.");
-            item.purchase_date = "";
-        }
         Restangular.all('item').post(item).then(function(response) {
             console.log("Saved Item");
             $location.path("/item/"+response.id);

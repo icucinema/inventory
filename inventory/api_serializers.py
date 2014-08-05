@@ -54,24 +54,36 @@ class FlatQuoteSerializer(HyperlinkedModelSerializer):
         model = models.Quote
         fields = ('url', 'id', 'supplier', 'amount', 'date', 'quote_url', 'notes', 'item')
 
+class InstanceSerializer(HyperlinkedModelSerializer):
+    supplier = SupplierSerializer()
+    status = ItemStatusSerializer()
+    home = ItemHomeSerializer()
+
+    class Meta:
+        model = models.Instance
+        fields = ('url', 'id', 'comment', 'purchase_date', 'purchase_price', 'supplier', 'status',
+                  'home', 'item')
+
+class FlatInstanceSerializer(HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Instance
+        fields = ('url', 'id', 'comment', 'purchase_date', 'purchase_price', 'supplier', 'status',
+                  'home', 'item')
 
 class ItemSerializer(HyperlinkedModelSerializer):
     category = ItemCategorySerializer()
-    status = ItemStatusSerializer()
     owner = ItemOwnerSerializer()
     responsible_position = ItemResponsiblePositionSerializer()
-    home = ItemHomeSerializer()
-    supplier = SupplierSerializer()
 
     class Meta:
         model = models.Item
-        fields = ('url', 'id', 'name', 'details', 'purchase_date', 'purchase_price',
-                  'category', 'status', 'owner', 'responsible_position', 'home', 'supplier',
-                  'notes', 'pictures', 'quotes')
+        fields = ('url', 'id', 'name', 'details', 'category', 'owner', 'responsible_position',
+                  'notes', 'pictures', 'quotes', 'instances')
 
 class FlatItemSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = models.Item
-        fields = ('url', 'id', 'name', 'details', 'purchase_date', 'purchase_price',
-                  'category', 'status', 'owner', 'responsible_position', 'home', 'supplier')
+        fields = ('url', 'id', 'name', 'details', 'category', 'owner', 'responsible_position',
+                  'notes', 'pictures', 'quotes', 'instances')
+
 

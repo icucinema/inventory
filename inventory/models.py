@@ -72,20 +72,32 @@ class Supplier(models.Model):
 class Item(models.Model):
     name = models.CharField(max_length=254)
     details = models.TextField(blank=True)
-    purchase_date = models.DateField(blank=True, null=True)
-    purchase_price = models.DecimalField(max_digits=14, decimal_places=2, blank=True, null=True)
     category = models.ForeignKey(ItemCategory)
-    status = models.ForeignKey(ItemStatus)
     owner = models.ForeignKey(ItemOwner)
     responsible_position = models.ForeignKey(ItemResponsiblePosition)
-    home = models.ForeignKey(ItemHome)
-    supplier = models.ForeignKey(Supplier)
-
+  
     class Meta:
         ordering = ['name']
 
     def __unicode__(self):
         return u'['+str(self.id)+u'] '+self.name
+
+# Instance
+
+class Instance(models.Model):
+    comment = models.CharField(max_length=254, blank=True)
+    purchase_date = models.DateField(blank=True, null=True)
+    purchase_price = models.DecimalField(max_digits=14, decimal_places=2, blank=True, null=True)
+    status = models.ForeignKey(ItemStatus)
+    home = models.ForeignKey(ItemHome)
+    supplier = models.ForeignKey(Supplier)
+    item = models.ForeignKey(Item, related_name='instances')
+
+    class Meta:
+        ordering = ['id']
+
+    def __unicode__(self):
+        return u'['+str(self.id)+u'] '+self.comment
 
 # Things that can be attached to an item
 

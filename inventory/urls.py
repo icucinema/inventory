@@ -17,6 +17,7 @@ api_router.register(r'supplier', api_views.SupplierViewSet)
 api_router.register(r'itemnote', api_views.ItemNoteViewSet)
 api_router.register(r'itempicture', api_views.ItemPictureViewSet)
 api_router.register(r'quote', api_views.QuoteViewSet)
+api_router.register(r'instance', api_views.InstanceViewSet)
 
 urlpatterns = patterns('',
         url(r'^$', views.IndexView.as_view(), name='root'),

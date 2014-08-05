@@ -4,7 +4,6 @@
 	<tabs>
 		<tab tab-title="Information">
 			<dl>
-				<dt>Asset ID</dt><dd>{{ data.id }}</dd>
         <dt>Name</dt>
           <dd ng-hide="editing">{{ data.name }}</dd>
           <dd ng-show="editing" class="field">
@@ -14,30 +13,10 @@
           <dd ng-hide="editing">{{ data.details }}</dd>
           <dd ng-show="editing" class="field">
             <textarea class="xxwide textarea input" ng-model="edit_data.details"></textarea>
-        <dt>Purchase Date</dt>
-          <dd ng-hide="editing">{{ data.purchase_date | date : 'dd/MM/yyyy' }}</dd>
-          <dd ng-show="editing" class="field">
-            <input type="text" class="xxwide text input" placeholder="dd/mm/yyyy" ng-model="edit_data.purchase_date" ng-pattern="/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d\d/">
-          </dd>
-        <dt>Purchase Price</dt>
-          <dd ng-hide="editing">{{ data.purchase_price | nullCurrency : "&pound;" }}</dd>
-          <dd ng-show="editing" class="field">
-            <input type="text" class="xxwide text input" ng-model="edit_data.purchase_price">
-          </dd>
-	       <dt>Original Supplier</dt>
-          <dd ng-hide="editing">{{ data.supplier.name }}</dd>
-          <dd ng-show="editing" class="field">
-            <select class="xxwide select input" ng-model="edit_data.supplier" ng-options="supplier.url as supplier.name for supplier in suppliers"></select>
-          </dd>
         <dt>Category</dt>
           <dd ng-hide="editing">{{ data.category.name }}</dd>
           <dd ng-show="editing" class="field">
             <select class="xxwide select input" ng-model="edit_data.category" ng-options="category.url as category.name for category in itemCategories"></select>
-          </dd>
-        <dt>Status</dt>
-          <dd ng-hide="editing">{{ data.status.name }}</dd>
-          <dd ng-show="editing" class="field">
-            <select class="xxwide select input" ng-model="edit_data.status" ng-options="status.url as status.name for status in itemStatuses"></select>
           </dd>
         <dt>Owner</dt>
           <dd ng-hide="editing">{{ data.owner.name }}</dd>
@@ -49,21 +28,101 @@
           <dd ng-show="editing" class="field">
             <select class="xxwide select input" ng-model="edit_data.responsible_position" ng-options="position.url as position.name for position in itemResponsiblePositions"></select>
           </dd>
-        <dt>Home</dt>
-          <dd ng-hide="editing">{{ data.home.name }}</dd>
-	        <dd ng-show="editing" class="field">
-            <select class="xxwide select input" ng-model="edit_data.home" ng-options="home.url as home.name for home in itemHomes"></select>
-          </dd>
- 		</dl>
+  		</dl>
       <h3>Actions</h3>
       <ul ng-hide="editing">
         <li><div class="btn primary norm" ng-click="edit()"><a href>Edit</a></div></li>
-        <li><div class="btn danger norm" ng-click="duplicate()"><a href>Duplicate</a></div></li>
       </ul>
       <ul ng-show="editing">
         <li><div class="btn primary norm" ng-click="saveEdit()"><a href>Save</a></div></li>
         <li><div class="btn danger norm" ng-click="cancelEdit()"><a href>Cancel</a></div></li>
       </ul>
+
+      <h3>Instances ({{ instances.length }})</h3>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th>Asset ID</th>
+              <th>Status</th>
+              <th>Home</th>
+              <th>Purchase Date</th>
+              <th>Purchsae Price</th>
+              <th>Supplier</th>
+              <th>Comment</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+          <tr ng-controller="InstanceCtrl" ng-repeat="instance in instances track by instance.id" class="dn-bounce">
+            <td>
+              {{ instance.id }}
+            </td>
+            <td>
+              <span ng-hide="editing">{{ instance.status.name }}</span>
+              <span ng-show="editing"><select class="xxwide select input" ng-model="edit_data.status" ng-options="status.url as status.name for status in itemStatuses"></select></span>
+            </td>
+            <td>
+              <span ng-hide="editing">{{ instance.home.name }}</span>
+     	        <span ng-show="editing"><select class="xxwide select input" ng-model="edit_data.home" ng-options="home.url as home.name for home in itemHomes"></select></span>
+            </td>
+            <td>
+              <span ng-hide="editing">{{ instance.purchase_date | date : 'dd/MM/yyyy' }}</span>
+              <span ng-show="editing"><input type="text" class="xxwide text input" placeholder="dd/mm/yyyy" ng-model="edit_data.purchase_date" ng-pattern="/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d\d/"></span>
+            </td>
+            <td>
+              <span ng-hide="editing">{{ instance.purchase_price | nullCurrency : "&pound;" }}</span>
+              <span ng-show="editing"><input type="text" class="xxwide text input" ng-model="edit_data.purchase_price"></span>
+            </td>
+            <td>
+              <span ng-hide="editing">{{ instance.supplier.name }}</span>
+              <span ng-show="editing"><select class="xxwide select input" ng-model="edit_data.supplier" ng-options="supplier.url as supplier.name for supplier in suppliers"></select></span>
+            </td>
+            <td>
+              <span ng-hide="editing">{{ instance.comment }}</span>
+              <span ng-show="editing"><input type="text" class="xxwide text input" ng-model="edit_data.comment"></span>
+            </td>
+            <td>
+              <ul ng-hide="editing">
+                <li><div class="btn primary norm" ng-click="editInstance($index)"><a href>Edit</a></div></li>
+                <li><div class="btn danger norm" ng-click="duplicateInstance($index)"><a href>Duplicate</a></div></li>
+              </ul>
+              <ul ng-show="editing">
+                <li><div class="btn primary norm" ng-click="saveEditInstance($index)"><a href>Save</a></div></li>
+                <li><div class="btn danger norm" ng-click="cancelEditInstance()"><a href>Cancel</a></div></li>
+              </ul>
+            </td>
+          </tr>
+      
+          <tr id="newInstanceTr">
+            <td>
+              Add New:
+            </td>
+            <td>
+              <select class="xxwide select input" ng-model="newInstance.status" ng-options="status.url as status.name for status in itemStatuses"></select>
+            </td>
+            <td>
+     	        <select class="xxwide select input" ng-model="newInstance.home" ng-options="home.url as home.name for home in itemHomes"></select>
+            </td>
+            <td>
+              <input type="text" class="xxwide text input" placeholder="dd/mm/yyyy" ng-model="newInstance.purchase_date" ng-pattern="/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d\d/">
+            </td>
+            <td>
+              <input type="text" class="xxwide text input" ng-model="newInstance.purchase_price">
+            </td>
+            <td>
+              <select class="xxwide select input" ng-model="newInstance.supplier" ng-options="supplier.url as supplier.name for supplier in suppliers"></select>
+            </td>
+            <td>
+              <input type="text" class="xxwide text input" ng-model="newInstance.comment">
+            </td>
+            <td>
+              <div class="norm primary btn" ng-click="addInstance(newInstance)"><a href>Add</a></div>
+            </td>
+          </tr>
+          </form>
+
+        </tbody>
+      </table>  
 		</tab>
 		<tab tab-title="Notes ({{ notes.length }})">
 			<table class="striped">

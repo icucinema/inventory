@@ -70,6 +70,11 @@ class ItemViewSet(ReversionModelViewSet):
         item = self.get_object()
         return serialize_queryset(self, QuoteSerializer, item.quotes.all())
 
+    @action(methods=['GET'])
+    def instances(self, request, pk=None):
+        item = self.get_object()
+        return serialize_queryset(self, InstanceSerializer, item.instances.all())
+
 class ItemCategoryViewSet(ReversionModelViewSet):
     queryset = ItemCategory.objects.all()
     serializer_class = ItemCategorySerializer
@@ -138,4 +143,14 @@ class QuoteViewSet(ReversionModelViewSet):
             return self.serializer_class
         return FlatQuoteSerializer
 
+class InstanceViewSet(ReversionModelViewSet):
+    queryset = Instance.objects.all()
+    serializer_class = InstanceSerializer
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ('comment')
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return self.serializer_class
+        return FlatInstanceSerializer
 

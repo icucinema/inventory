@@ -16,8 +16,13 @@ class QuoteInline(admin.TabularInline):
     model = Quote
     extra = 0
 
+class InstanceInline(admin.TabularInline):
+    model = Instance
+    extra = 0
+
 class ItemAdmin(reversion.VersionAdmin):
     inlines = [
+            InstanceInline,
             ItemPictureInline,
             ItemNoteInline,
             QuoteInline,
@@ -50,6 +55,8 @@ class ItemPictureAdmin(reversion.VersionAdmin):
 class QuoteAdmin(reversion.VersionAdmin):
     pass
 
+class InstanceAdmin(reversion.VersionAdmin):
+    pass
 
 admin.site.register(Item, ItemAdmin)
 admin.site.register(ItemCategory, ItemCategoryAdmin)
@@ -61,4 +68,5 @@ admin.site.register(Supplier, SupplierAdmin)
 admin.site.register(ItemNote, ItemNoteAdmin)
 admin.site.register(ItemPicture, ItemPictureAdmin)
 admin.site.register(Quote, QuoteAdmin)
+admin.site.register(Instance, InstanceAdmin)
 

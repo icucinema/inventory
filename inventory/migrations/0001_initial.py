@@ -58,16 +58,24 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=254)),
             ('details', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('purchase_date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('purchase_price', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=14, decimal_places=2, blank=True)),
             ('category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemCategory'])),
-            ('status', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemStatus'])),
             ('owner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemOwner'])),
             ('responsible_position', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemResponsiblePosition'])),
-            ('home', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemHome'])),
-            ('supplier', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.Supplier'])),
         ))
         db.send_create_signal(u'inventory', ['Item'])
+
+        # Adding model 'Instance'
+        db.create_table(u'inventory_instance', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('comment', self.gf('django.db.models.fields.CharField')(max_length=254, blank=True)),
+            ('purchase_date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
+            ('purchase_price', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=14, decimal_places=2, blank=True)),
+            ('status', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemStatus'])),
+            ('home', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.ItemHome'])),
+            ('supplier', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['inventory.Supplier'])),
+            ('item', self.gf('django.db.models.fields.related.ForeignKey')(related_name='instances', to=orm['inventory.Item'])),
+        ))
+        db.send_create_signal(u'inventory', ['Instance'])
 
         # Adding model 'ItemNote'
         db.create_table(u'inventory_itemnote', (
@@ -121,6 +129,9 @@ class Migration(SchemaMigration):
         # Deleting model 'Item'
         db.delete_table(u'inventory_item')
 
+        # Deleting model 'Instance'
+        db.delete_table(u'inventory_instance')
+
         # Deleting model 'ItemNote'
         db.delete_table(u'inventory_itemnote')
 
@@ -132,19 +143,25 @@ class Migration(SchemaMigration):
 
 
     models = {
+        u'inventory.instance': {
+            'Meta': {'ordering': "['id']", 'object_name': 'Instance'},
+            'comment': ('django.db.models.fields.CharField', [], {'max_length': '254', 'blank': 'True'}),
+            'home': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemHome']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'item': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'instances'", 'to': u"orm['inventory.Item']"}),
+            'purchase_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'purchase_price': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '14', 'decimal_places': '2', 'blank': 'True'}),
+            'status': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemStatus']"}),
+            'supplier': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.Supplier']"})
+        },
         u'inventory.item': {
             'Meta': {'ordering': "['name']", 'object_name': 'Item'},
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemCategory']"}),
             'details': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'home': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemHome']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '254'}),
             'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemOwner']"}),
-            'purchase_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'purchase_price': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '14', 'decimal_places': '2', 'blank': 'True'}),
-            'responsible_position': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemResponsiblePosition']"}),
-            'status': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemStatus']"}),
-            'supplier': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.Supplier']"})
+            'responsible_position': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['inventory.ItemResponsiblePosition']"})
         },
         u'inventory.itemcategory': {
             'Meta': {'ordering': "['name']", 'object_name': 'ItemCategory'},
