@@ -1,6 +1,8 @@
 <div ng-show="loading"><h2>Loading...</h2></div>
 <div ng-if="!loading">
   <h2>Add New Inventory Item</h2>
+  <p>Before adding an Item, ensure that there isn't already one like this listed in the Items List.</p>
+  <p>If an equivalent Item already exists, you should add another <strong>Instance</strong> to the existing Item, rather than adding a new Item.</p>
   <form ng-submit="add(item)">
     <dl>
       <dt>Name <small>The title of this item (keep it short and to the point).</small></dt>

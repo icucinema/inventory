@@ -184,6 +184,8 @@
            ng-show="!dropSupported"></div>
 	  </tab>
 		<tab tab-title="Quotes ({{ quotes.length }})">
+      <p>This section lists quoted replacement costs for the equipment concerned.</p>
+      <p>The purpose of this is to keep track of the current best-estimate cost to replace equipment we own based on the most up to date quote we have, rather than the initial purchase price.</p>
 		  <table class="striped">
         <thead>
           <tr>
@@ -233,7 +235,7 @@
           <dd class="field">
             <input type="text" class="xxwide text input" placeholder="dd/mm/yyyy" ng-model="newQuote.date" ng-pattern="/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d\d/">
           </dd>
-          <dt>Total Amount <small>The total amount in GBP of the quote, excluding VAT and any additional items listed on the same quote.</small></dt>
+          <dt>Total Amount <small>The quoted amount of <strong>one</strong> of the items concerned, in GBP excluding VAT.</small></dt>
           <dd class="field">
             <input type="text" class="xxwide text input" ng-model="newQuote.amount">
           </dd>
