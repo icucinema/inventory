@@ -14,18 +14,16 @@ Item <strong>{{ data.startAt }}</strong>-<strong>{{ data.endAt }}</strong> of <s
 <table class="striped">
 	<thead>
 		<tr>
-			<th>Asset ID</th>
 			<th>Name</th>
       <th>Category</th>
-			<th>Home</th>
+			<th>Owner</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr ng-repeat="item in data.results">
-			<td><a href="{{ itemUrl(item) }}">{{ item.id }}</a></td>
-			<td>{{ item.name }}</td>
+      <td><a href="{{ itemUrl(item) }}">{{ item.name }}</a></td>
 			<td>{{ item.category.name }}</td>
-      <td>{{ item.home.name }}</td>
+      <td>{{ item.owner.name }}</td>
 		</tr>
 	</tbody>
 </table>
