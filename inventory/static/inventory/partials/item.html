@@ -109,10 +109,10 @@
      	        <select class="xxwide select input" ng-model="newInstance.home" ng-options="home.url as home.name for home in itemHomes"></select>
             </td>
             <td>
-              <input type="text" class="xxwide text input" placeholder="dd/mm/yyyy" ng-model="newInstance.purchase_date" ng-pattern="/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d\d/">
+              <input type="text" class="xxwide text input date-input" placeholder="dd/mm/yyyy" ng-model="newInstance.purchase_date" ng-pattern="/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d\d/">
             </td>
             <td>
-              <input type="text" class="xxwide text input" ng-model="newInstance.purchase_price">
+              <input type="text" class="xxwide text input price-input" ng-model="newInstance.purchase_price">
             </td>
             <td>
               <select class="xxwide select input" ng-model="newInstance.supplier" ng-options="supplier.url as supplier.name for supplier in suppliers"></select>
@@ -201,7 +201,7 @@
           <tr ng-controller="QuoteCtrl" ng-repeat="quote in quotes track by quote.id" class="dn-bounce">
             <td>
               <span ng-hide="editing">{{ quote.date | date : "dd/MM/yyyy" }}</span>
-              <span ng-show="editing"><input type="text" class="narrow text input" placeholder="dd/mm/yyyy" ng-model="edit_data.date" ng-pattern="/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d\d/"></span> 
+              <span ng-show="editing"><input type="text" class="narrow text input date-input" placeholder="dd/mm/yyyy" ng-model="edit_data.date" ng-pattern="/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d\d/"></span> 
             </td>
             <td>
               <span ng-hide="editing">{{ quote.supplier.name }}</span>
@@ -209,7 +209,7 @@
             </td>
             <td>
               <span ng-hide="editing">{{ quote.amount | currency : "&pound;" }}</span>
-              <span ng-show="editing"><input type="text" class="text input" ng-model="edit_data.amount"></span>
+              <span ng-show="editing"><input type="text" class="text input price-input" ng-model="edit_data.amount"></span>
             </td>
             <td>
               <span ng-hide="editing"><a href="{{ quote.quote_url }}" target="_blank">Link</a></span>

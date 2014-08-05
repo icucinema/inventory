@@ -63,3 +63,11 @@ ul.bulleted-list > li {
 	content: " - ";
 	font-weight: bold;
 }
+
+.date-input {
+    width: 90px;
+}
+
+.price-input {
+    width: 80px;
+}
