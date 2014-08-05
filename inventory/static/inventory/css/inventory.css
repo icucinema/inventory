@@ -71,3 +71,15 @@ ul.bulleted-list > li {
 .price-input {
     width: 80px;
 }
+
+.inventory-app-row {
+    max-width: 1400px;
+}
+
+.inventory-app-right-column {
+    max-width: 210px;
+}
+
+.status-select {
+    width: 150px;
+}
