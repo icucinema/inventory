@@ -9,7 +9,7 @@
           <dd ng-show="editing" class="field">
             <input type="text" class="xxwide text input" ng-model="edit_data.name">
           </dd>
-				<dt>Details</dt>
+	<dt>Details</dt>
           <dd ng-hide="editing">{{ data.details }}</dd>
           <dd ng-show="editing" class="field">
             <textarea class="xxwide textarea input" ng-model="edit_data.details"></textarea>
@@ -23,7 +23,7 @@
           <dd ng-show="editing" class="field">
             <select class="xxwide select input" ng-model="edit_data.owner" ng-options="owner.url as owner.name for owner in itemOwners"></select>
           </dd>
-        <dt>Responsible Comittee Position</dt>
+        <dt>Responsible Committee Position</dt>
           <dd ng-hide="editing">{{ data.responsible_position.name }}</dd>
           <dd ng-show="editing" class="field">
             <select class="xxwide select input" ng-model="edit_data.responsible_position" ng-options="position.url as position.name for position in itemResponsiblePositions"></select>
@@ -89,7 +89,7 @@
             <td>
               <ul ng-hide="editing">
                 <li><div class="btn primary norm" ng-click="editInstance($index)"><a href>Edit</a></div></li>
-                <li><div class="btn danger norm" ng-click="duplicateInstance($index)"><a href>Duplicate</a></div></li>
+                <li><div class="btn warning norm" ng-click="duplicateInstance($index)"><a href>Duplicate</a></div></li>
               </ul>
               <ul ng-show="editing">
                 <li><div class="btn primary norm" ng-click="saveEditInstance($index)"><a href>Save</a></div></li>
