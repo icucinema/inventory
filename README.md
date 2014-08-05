@@ -42,10 +42,11 @@ Deployment
 ----------
 
 1. Copy the ```inventory``` folder from within this repository to where your Django Apps are located.
-2. Add ```inventory``` to the list of installed app in settings.py.
-3. Run ```python manage.py migrate``` to add the database schema to the DB.
-4. TODO: How to set up where images are stored.
-5. TODO: How to get the static files in the right plaec.
-6. TODO: Anything else required?
+2. Add ```inventory``` to the list of installed apps in settings.py.
+3. Add any dependencies not yet present to the list of installed apps in settings.py.
+4. Run ```python manage.py migrate``` to add the database schema to the DB.
+5. Add the inventory module to ```urls.py```.
+6. Get the static files in the right place with ```python manage.py collectstatic```.
+7. TODO: Anything else required?
 
 
