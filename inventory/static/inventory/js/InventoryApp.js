@@ -609,6 +609,7 @@ app.controller('SuppliersCtrl', function($rootScope, $scope, $routeParams, $loca
             updateSupplierData();
             supplier.name = "";
             supplier.supplier_url = "";
+            supplier.wiki = "";
         });
     };
 
