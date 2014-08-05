@@ -21,6 +21,7 @@ api_router.register(r'instance', api_views.InstanceViewSet)
 
 urlpatterns = patterns('',
         url(r'^$', views.IndexView.as_view(), name='root'),
+        url(r'^asset/(?P<asset_id>\d+)$', views.asset_view),
         url(r'^(?P<partial>partials/[a-z]+\.html)$', views.angular_partial_view),
 )
 api_urlpatterns = api_router.urls
