@@ -3,10 +3,9 @@ from django.conf.urls import patterns, include, url
 from rest_framework import routers
 
 from inventory import api_views
-from inventory import api_router
 from inventory import views
 
-api_router = api_router.APIRouter()
+api_router = routers.DefaultRouter()
 api_router.register(r'item', api_views.ItemViewSet)
 api_router.register(r'itemcategory', api_views.ItemCategoryViewSet)
 api_router.register(r'itemstatus', api_views.ItemStatusViewSet)

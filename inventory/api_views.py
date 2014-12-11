@@ -1,5 +1,5 @@
 from rest_framework import viewsets, filters, views
-from rest_framework.decorators import action, link
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
@@ -55,22 +55,22 @@ class ItemViewSet(ReversionModelViewSet):
             return self.serializer_class
         return FlatItemSerializer
 
-    @action(methods=['GET'])
+    @detail_route(methods=['GET'])
     def notes(self, request, pk=None):
         item = self.get_object()
         return serialize_queryset(self, ItemNoteSerializer, item.notes.all())
 
-    @action(methods=['GET'])
+    @detail_route(methods=['GET'])
     def pictures(self, request, pk=None):
         item = self.get_object()
         return serialize_queryset(self, ItemPictureSerializer, item.pictures.all())
 
-    @action(methods=['GET'])
+    @detail_route(methods=['GET'])
     def quotes(self, request, pk=None):
         item = self.get_object()
         return serialize_queryset(self, QuoteSerializer, item.quotes.all())
 
-    @action(methods=['GET'])
+    @detail_route(methods=['GET'])
     def instances(self, request, pk=None):
         item = self.get_object()
         return serialize_queryset(self, InstanceSerializer, item.instances.all())
